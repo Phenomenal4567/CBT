@@ -4,153 +4,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JAMB Vibe Master</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; }
         [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; }
         
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 80px; overflow-x: hidden; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 85px; overflow-x: hidden; }
+        #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
-        #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; min-height: 100vh; }
-        
-        /* Fixed UI Cards */
-        .card { background: var(--card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; width: 100%; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; width: 100%; }
         .hidden { display: none !important; }
 
-        /* Navigation Fix */
-        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.1); z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; transition: 0.2s; }
+        /* Navigation */
+        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.1); z-index: 1000; }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; transition: 0.2s; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
+        .nav-item i { margin-bottom: 4px; }
 
-        /* Buttons & Inputs */
-        button { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 10px; }
-        input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #d1d9e0; background: var(--card); color: var(--text); font-size: 15px; margin-bottom: 10px; }
-        
-        /* Grid Fix */
-        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; padding: 2px; }
-        .subject-chip { padding: 12px 8px; border: 1.5px solid var(--accent); border-radius: 10px; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; background: transparent; }
-        .subject-chip.selected { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
+        /* Dashboard Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .stat-card { background: rgba(0,123,255,0.05); padding: 15px; border-radius: 15px; text-align: center; }
+        .stat-card b { font-size: 20px; display: block; color: var(--accent); }
 
-        /* Ideas Tab Betterment */
-        .suggestion-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
-        .suggest-chip { background: rgba(0,123,255,0.1); color: var(--accent); border: 1px solid var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+        /* Buttons & Grid */
+        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
+        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .subject-chip.selected { background: var(--accent); color: white; }
 
-        /* Calc & Timer Fix */
-        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 15px; border-radius: 20px; z-index: 2000; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 10px; border-radius: 10px; }
-        .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btns button { padding: 15px; margin: 0; background: #3a3a3c; border-radius: 50%; height: 55px; width: 55px; display: flex; align-items: center; justify-content: center; }
-        .calc-btns button.op { background: #ff9f0a; }
+        /* Exam UI */
+        .opt-btn { background: transparent; border: 1.5px solid #d1d9e0; color: var(--text); text-align: left; margin-bottom: 10px; width: 100%; padding: 14px; border-radius: 12px; cursor: pointer; }
+        .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.1); }
+        #timer-box { font-family: monospace; font-size: 18px; color: #d32f2f; background: rgba(211,47,47,0.1); padding: 8px 12px; border-radius: 10px; }
 
-        #timer { font-family: monospace; font-size: 20px; color: #d32f2f; background: rgba(211, 47, 47, 0.1); padding: 5px 10px; border-radius: 8px; }
+        /* Calculator */
+        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 15px; border-radius: 12px; }
+        .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btns button { padding: 15px; margin:0; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
+
+        /* Countdown Loader */
+        #loading-count { font-size: 48px; font-weight: bold; color: var(--accent); margin: 20px 0; }
     </style>
 </head>
 <body data-theme="light">
 
 <div id="app-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2 id="header-title" style="margin:0;">Practice</h2>
-        <div onclick="toggleTheme()" style="cursor:pointer; font-size: 24px;">??</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2 id="header-title" style="margin:0;">Dashboard</h2>
+        <div onclick="toggleTheme()" id="theme-icon" style="cursor:pointer;"><i data-lucide="moon"></i></div>
     </div>
 
-    <div id="tab-dash" class="hidden">
+    <div id="tab-dash">
         <div class="card">
-            <h3>Student Dashboard</h3>
-            <p style="font-size:14px; opacity:0.8;">Track your progress here.</p>
-            <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:12px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Total Sessions:</span><b>24</b></div>
-                <div style="display:flex; justify-content:space-between;"><span>Avg. Score:</span><b>68%</b></div>
+            <h3>Welcome Back, <span id="display-name">Student</span></h3>
+            <div class="stat-grid">
+                <div class="stat-card"><span>Sessions</span><b id="stat-sessions">0</b></div>
+                <div class="stat-card"><span>Best Score</span><b id="stat-best">0%</b></div>
             </div>
-            <button onclick="switchTab('exam', document.getElementById('nav-exam'))" style="margin-top:20px;">Start New Practice</button>
+            <p style="font-size: 13px; margin-bottom: 5px;">Recent Result:</p>
+            <div id="recent-result" style="padding:15px; border-radius:12px; border:1px dashed #ccc; font-size:14px; text-align:center;">
+                No sessions completed yet.
+            </div>
+            <button onclick="switchTab('exam', document.getElementById('nav-exam'))"><i data-lucide="play"></i> Start Practice</button>
         </div>
     </div>
 
-    <div id="tab-exam">
+    <div id="tab-exam" class="hidden">
         <div id="login-screen" class="card">
-            <h3>Welcome</h3>
-            <p>Enter your details to sync results.</p>
-            <input type="text" id="username" placeholder="Full Name">
-            <button onclick="showSetup()">Enter Portal</button>
+            <h3>Student Login</h3>
+            <input type="text" id="username" placeholder="Enter Full Name" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
+            <button onclick="saveUser()">Login & Sync</button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>Setup CBT</h3>
-            <p style="font-size:13px; color:gray;">Choose up to 4 subjects to practice simultaneously.</p>
+            <h3>CBT Setup</h3>
             <div class="subject-grid" id="subject-list"></div>
-            <button onclick="startExam()">Start Practice Session</button>
+            <button onclick="startExam()"><i data-lucide="zap"></i> Prepare Questions</button>
+        </div>
+
+        <div id="loading-screen" class="card hidden" style="text-align: center;">
+            <h3>Generating Exam...</h3>
+            <div id="loading-count">5</div>
+            <p style="font-size:12px; opacity:0.6;">Connecting to JAMB API</p>
         </div>
 
         <div id="exam-screen" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <span id="timer">120:00</span>
-                <button onclick="toggleCalc()" style="width: auto; margin: 0; padding: 6px 12px; background: #333;">?? Calc</button>
+                <div id="timer-box">120:00</div>
+                <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
             </div>
             <div id="active-tabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px;"></div>
-            <div style="border-top: 1px solid #eee; padding-top:15px;">
-                <h4 id="question-text" style="font-weight: 500; line-height: 1.5; min-height: 80px;"></h4>
-                <div id="options-container"></div>
-            </div>
+            <h4 id="question-text" style="line-height:1.5; min-height:80px;"></h4>
+            <div id="options-container"></div>
             <div style="display: flex; gap: 10px; margin-top:20px;">
-                <button onclick="prevQ()" style="background:#6c757d">Previous</button>
+                <button onclick="prevQ()" style="background:#6c757d">Back</button>
                 <button onclick="nextQ()">Next</button>
             </div>
-            <button onclick="finishExam()" style="background:#dc3545; margin-top:15px;">Submit All Subjects</button>
+            <button onclick="finishExam()" style="background:#dc3545; margin-top:15px;">Submit Exam</button>
+        </div>
+
+        <div id="result-screen" class="card hidden">
+            <h2 style="text-align:center;">Exam Result</h2>
+            <div id="result-summary" style="text-align:center; padding:20px; font-size:18px;"></div>
+            <button onclick="location.reload()" style="background:#28a745;">Back to Dashboard</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
-            <h3>Vibe Feedback Hub</h3>
-            <p style="font-size:14px; color:gray; margin-bottom:15px;">Tap a suggestion below to auto-fill:</p>
-            
-            <div class="suggestion-list">
-                <span class="suggest-chip" onclick="fillIdea('I found a typo in a Biology question.')">?? Fix Typo</span>
-                <span class="suggest-chip" onclick="fillIdea('Can you add 2024 Past Questions?')">?? Add 2024 Qs</span>
-                <span class="suggest-chip" onclick="fillIdea('The calculator is a bit small on my phone.')">?? UI Fix</span>
-                <span class="suggest-chip" onclick="fillIdea('Add a dark mode toggle to the exam screen.')">?? Dark Mode</span>
-                <span class="suggest-chip" onclick="fillIdea('The Biology explanations are really helpful!')">?? Compliment</span>
+            <h3>Vibe Suggestions</h3>
+            <p style="font-size:14px; opacity:0.7;">Tap a quick idea:</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
+                <span onclick="fillIdea('Add more Biology explanations')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Explanations</span>
+                <span onclick="fillIdea('Calculator is glitchy on mobile')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Fix Calc</span>
+                <span onclick="fillIdea('The timer is too fast')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Timer</span>
             </div>
-
-            <textarea id="feedback-text" placeholder="Or type your own idea here..."></textarea>
-            <button onclick="sendFeedback()" style="background:#25D366;">Send to Admin (WhatsApp)</button>
+            <textarea id="feedback-text" placeholder="Type your idea..." style="width:100%; height:120px; border-radius:12px; padding:10px;"></textarea>
+            <button onclick="sendFeedback()"><i data-lucide="send"></i> Send Idea</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:10px; font-weight:bold;">
-        <span>JAMB CALCULATOR</span>
-        <span onclick="toggleCalc()" style="cursor:pointer; padding:0 10px;">?</span>
+    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:15px;">
+        <span>JAMB CALC</span>
+        <span onclick="toggleCalc()" style="cursor:pointer;">?</span>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
-        <button onclick="clr()" style="background:#acacaf; color:black;">AC</button><button onclick="press('/')" class="op">÷</button><button onclick="press('*')" class="op">×</button><button onclick="press('-')" class="op">?</button>
-        <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button onclick="press('+')" class="op">+</button>
-        <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button onclick="calculate()" class="op">=</button>
-        <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button onclick="press('0')" style="grid-column: span 1;">0</button>
+        <button onclick="clr()" style="background:#acacaf; color:black;">AC</button><button onclick="press('/')" style="background:#ff9f0a;">÷</button><button onclick="press('*')" style="background:#ff9f0a;">×</button><button onclick="press('-')" style="background:#ff9f0a;">?</button>
+        <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button onclick="press('+')" style="background:#ff9f0a;">+</button>
+        <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button onclick="calculate()" style="background:#ff9f0a;">=</button>
+        <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button onclick="press('0')">0</button>
     </div>
 </div>
 
 <div class="nav-bar">
-    <div class="nav-item" onclick="switchTab('dash', this)">??<br>Home</div>
-    <div class="nav-item active" id="nav-exam" onclick="switchTab('exam', this)">??<br>Practice</div>
-    <div class="nav-item" onclick="switchTab('ideas', this)">??<br>Ideas</div>
+    <div class="nav-item active" onclick="switchTab('dash', this)"><i data-lucide="home"></i><br>Home</div>
+    <div id="nav-exam" class="nav-item" onclick="switchTab('exam', this)"><i data-lucide="book-open"></i><br>Practice</div>
+    <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
 </div>
 
 <script>
+    // --- APP STATE & STORAGE ---
     const API_TOKEN = "ALOC-37270319fe62227b783f";
-    const ADMIN_PHONE = "2349042427548";
-    const SUBJECTS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Accounting", "Geography", "Agricultural Science", "Civic Education"];
+    const SUBJECTS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography"];
     
+    let stats = JSON.parse(localStorage.getItem('jamb_vibe_stats')) || { sessions: 0, best: 0, last: "" };
     let examData = {}, userAnswers = {}, selectedSubs = [], activeSub = "", currentIdx = 0;
 
-    // Build Subject List
+    function updateStats() {
+        document.getElementById('stat-sessions').innerText = stats.sessions;
+        document.getElementById('stat-best').innerText = stats.best + "%";
+        if(stats.last) document.getElementById('recent-result').innerHTML = `<b>Last Session:</b> ${stats.last}`;
+        localStorage.setItem('jamb_vibe_stats', JSON.stringify(stats));
+    }
+    updateStats();
+
+    // Icon Rendering
+    lucide.createIcons();
+
+    function fillIdea(t) { document.getElementById('feedback-text').value = t; }
+
+    function switchTab(tab, el) {
+        ['dash','exam','ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
+        document.getElementById('tab-'+tab).classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('header-title').innerText = el.innerText.trim();
+    }
+
+    function toggleTheme() {
+        const b = document.body;
+        const current = b.dataset.theme;
+        b.dataset.theme = current === 'dark' ? 'light' : 'dark';
+        document.getElementById('theme-icon').innerHTML = `<i data-lucide="${b.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+        lucide.createIcons();
+    }
+
+    // Build Subjects
     const list = document.getElementById('subject-list');
     SUBJECTS.forEach(s => {
         const d = document.createElement('div');
-        d.className = 'subject-chip';
-        d.innerText = s;
+        d.className = 'subject-chip'; d.innerText = s;
         d.onclick = () => {
             if(selectedSubs.includes(s)) { selectedSubs = selectedSubs.filter(x => x!==s); d.classList.remove('selected'); }
             else if(selectedSubs.length < 4) { selectedSubs.push(s); d.classList.add('selected'); }
@@ -158,32 +196,28 @@
         list.appendChild(d);
     });
 
-    function fillIdea(text) { document.getElementById('feedback-text').value = text; }
-
-    function switchTab(tab, el) {
-        ['dash','exam','ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
-        document.getElementById('tab-'+tab).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('header-title').innerText = el.innerText.split('\n')[1];
-    }
-
-    // Calc Logic
-    function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
-    function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
-    function clr() { document.getElementById('calc-display').value = '0'; }
-    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Error"; } }
-
-    function showSetup() {
-        if(!document.getElementById('username').value) return alert("Please enter your name!");
+    function saveUser() {
+        const name = document.getElementById('username').value;
+        if(!name) return alert("Enter name");
+        document.getElementById('display-name').innerText = name.split(' ')[0];
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('setup-screen').classList.remove('hidden');
     }
 
     async function startExam() {
-        if(selectedSubs.length < 1) return alert("Select at least one subject!");
-        document.getElementById('setup-screen').innerHTML = "<div style='text-align:center; padding:40px;'><p>Fetching JAMB API Data...</p></div>";
-        
+        if(selectedSubs.length < 1) return alert("Select subjects");
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('loading-screen').classList.remove('hidden');
+
+        // Countdown logic
+        let count = 5;
+        const cBox = document.getElementById('loading-count');
+        const cd = setInterval(() => {
+            count--;
+            cBox.innerText = count;
+            if(count <= 0) clearInterval(cd);
+        }, 800);
+
         try {
             for(let s of selectedSubs) {
                 const r = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': API_TOKEN } });
@@ -192,18 +226,17 @@
                 userAnswers[s] = {};
             }
             activeSub = selectedSubs[0];
-            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.add('hidden');
             document.getElementById('exam-screen').classList.remove('hidden');
             renderTabs(); loadQ(); startTimer();
-        } catch { alert("API Connection Error. Ensure your data is on."); location.reload(); }
+        } catch { alert("Network Error"); location.reload(); }
     }
 
     function renderTabs() {
-        const c = document.getElementById('active-tabs');
-        c.innerHTML = "";
+        const c = document.getElementById('active-tabs'); c.innerHTML = "";
         selectedSubs.forEach(s => {
             const b = document.createElement('button');
-            b.innerText = s; b.style.width="auto"; b.style.fontSize="12px"; b.style.padding="8px 12px";
+            b.innerText = s; b.style.width="auto"; b.style.padding="6px 12px"; b.style.fontSize="11px";
             b.style.background = s === activeSub ? "#007bff" : "#555";
             b.onclick = () => { activeSub = s; currentIdx = 0; renderTabs(); loadQ(); };
             c.appendChild(b);
@@ -213,8 +246,7 @@
     function loadQ() {
         const q = examData[activeSub][currentIdx];
         document.getElementById('question-text').innerHTML = q.q;
-        const c = document.getElementById('options-container');
-        c.innerHTML = "";
+        const c = document.getElementById('options-container'); c.innerHTML = "";
         q.opts.forEach((o, i) => {
             const b = document.createElement('button');
             b.className = `opt-btn ${userAnswers[activeSub][currentIdx] === i ? 'selected' : ''}`;
@@ -231,7 +263,7 @@
         let t = 120 * 60;
         const i = setInterval(() => {
             let m = Math.floor(t/60), s = t%60;
-            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
+            document.getElementById('timer-box').innerText = `${m}:${s<10?'0':''}${s}`;
             if(t <= 0) { clearInterval(i); finishExam(); }
             t--;
         }, 1000);
@@ -240,18 +272,25 @@
     function finishExam() {
         let score = 0, total = 0;
         selectedSubs.forEach(s => { examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) score++; }); });
-        const name = document.getElementById('username').value;
-        window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent("Result for "+name+": "+score+"/"+total)}`);
-        alert("Exam Submitted! Final Score: " + score);
-        location.reload();
+        
+        const percent = Math.round((score/total)*100);
+        stats.sessions++;
+        if(percent > stats.best) stats.best = percent;
+        stats.last = `${selectedSubs.join('/')}: ${score}/${total} (${percent}%)`;
+        updateStats();
+
+        document.getElementById('exam-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        document.getElementById('result-summary').innerHTML = `<h1 style="color:#28a745">${percent}%</h1><p>You scored ${score} out of ${total}</p>`;
     }
 
-    function toggleTheme() { document.body.dataset.theme = document.body.dataset.theme === "dark" ? "light" : "dark"; }
-    function sendFeedback() { 
-        const m = document.getElementById('feedback-text').value;
-        if(!m) return alert("Type something first!");
-        window.open(`https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent(m)}`); 
-    }
+    // Calc Engine
+    function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
+    function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
+    function clr() { document.getElementById('calc-display').value = '0'; }
+    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Error"; } }
+
+    function sendFeedback() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('feedback-text').value)}`); }
 </script>
 </body>
 </html>
