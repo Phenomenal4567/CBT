@@ -21,52 +21,40 @@
         .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
-        /* Action Buttons */
-        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
+        /* Buttons */
+        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
         .primary-btn:active { transform: scale(0.97); }
         input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
 
-        /* Scrollable Subject Grid */
-        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding: 5px; }
-        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
-        .sub-chip.selected { background: var(--accent); color: white; }
+        /* LOADING UI FIX */
+        .prog-outer { width: 100%; background: rgba(0,123,255,0.1); height: 30px; border-radius: 15px; margin: 20px 0; overflow: hidden; border: 1px solid var(--border); }
+        #prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-        /* Exam Layout & Option Buttons */
-        #question-box { background: rgba(0,123,255,0.04); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 25px; line-height: 1.6; font-size: 16px; min-height: 80px; }
-        .opt-btn { background: var(--card); border: 2px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; transition: 0.2s; font-size: 15px; display: flex; align-items: center; gap: 12px; }
+        /* History */
+        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .history-score-blob { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; flex-shrink: 0; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        /* Question UI */
+        #question-box { background: rgba(0,123,255,0.04); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 25px; line-height: 1.6; font-size: 16px; }
+        .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; transition: 0.2s; font-size: 15px; display: flex; align-items: center; gap: 12px; }
         .opt-letter { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
         .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.05); }
         .opt-btn.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
         
-        /* Review Mode Colors */
-        .opt-btn.is-correct { border-color: var(--correct) !important; background: rgba(40,167,69,0.1) !important; }
-        .opt-btn.is-correct .opt-letter { background: var(--correct) !important; color: white !important; border-color: var(--correct) !important; }
-        .opt-btn.is-wrong { border-color: var(--wrong) !important; background: rgba(220,53,69,0.1) !important; }
-        .opt-btn.is-wrong .opt-letter { background: var(--wrong) !important; color: white !important; border-color: var(--wrong) !important; }
-
-        /* Jump Navigation Grid */
+        /* Jump Grid */
         .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 140px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; border: 1px solid var(--border); }
         .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
-        .q-num.answered { background: var(--accent); color: white; border-color: var(--accent); }
+        .q-num.answered { background: var(--accent); color: white; }
         .q-num.current { border: 2.5px solid var(--accent); font-weight: 900; }
         .q-num.rev-correct { background: var(--correct); color: white; }
         .q-num.rev-wrong { background: var(--wrong); color: white; }
 
-        /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { width: 100%; max-width: 350px; background: var(--card); border-radius: 28px; padding: 25px; color: var(--text); border: 1px solid var(--border); text-align: center; }
 
-        /* History Blob */
-        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .history-score-blob { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; }
-
-        /* Calc Buttons */
-        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 28px; margin-bottom: 18px; border-radius: 12px; font-family: monospace; }
-        .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; color: white; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .calc-btns button.op { background: #ff9f0a; }
-
-        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 700; transition: 0.2s; }
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; }
+        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
+        .sub-chip.selected { background: var(--accent); color: white; }
     </style>
 </head>
 <body data-theme="light">
@@ -114,7 +102,7 @@
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
             <h3 id="loader-status">Fetching Data...</h3>
-            <div class="prog-outer"><div id="prog-bar" class="prog-inner">0%</div></div>
+            <div class="prog-outer"><div id="prog-bar">0%</div></div>
             <div id="countdown-sync" style="font-size: 40px; font-weight: 900; color: var(--accent);"></div>
         </div>
 
@@ -130,36 +118,21 @@
             </div>
             <div id="question-box"></div>
             <div id="options-box"></div>
-
             <div style="display: flex; gap: 12px; margin-top:25px;">
                 <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px;"><i data-lucide="chevron-left"></i> Back</button>
                 <button onclick="nextQ()" style="background:var(--accent); color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px;">Next <i data-lucide="chevron-right"></i></button>
             </div>
-
             <div class="q-nav-grid" id="q-nav-grid"></div>
             <button id="final-submit-trigger" onclick="showSubmitModal()" style="background:#dc3545; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800;">Submit All Subjects</button>
             <button id="exit-review-btn" onclick="location.reload()" class="hidden" style="background:#28a745; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800;">Close Review</button>
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <p style="font-weight:bold; opacity:0.6;">Aggregate Score</p>
+            <p style="font-weight:bold; opacity:0.6;">Aggregate Score (JAMB Standard)</p>
             <h1 id="final-aggregate" style="font-size: 55px; color: #28a745; margin: 10px 0;">0 / 400</h1>
             <div id="breakdown-list" style="margin-bottom: 25px; text-align: left; font-size: 14px;"></div>
             <button onclick="startReview()" style="background:#6c757d; color:white; border:none; padding:16px; border-radius:14px; width:100%; margin-bottom: 10px; font-weight:bold;">Review Mistakes</button>
             <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:16px; border-radius:14px; width:100%; font-weight:bold;">Dashboard Home</button>
-        </div>
-    </div>
-
-    <div id="tab-ideas" class="hidden">
-        <div class="card">
-            <h3>Do you have a feedback</h3>
-            <div style="margin-bottom:15px;">
-                <div class="sample-chip" onclick="fillIdea('Add more 2026 practice questions')">Add 2026 Qs</div>
-                <div class="sample-chip" onclick="fillIdea('The calculator is a bit slow')">Fix Calc</div>
-                <div class="sample-chip" onclick="fillIdea('I love the UI design')">Review App</div>
-            </div>
-            <textarea id="idea-msg" placeholder="Write your feedback here..."></textarea>
-            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366;"><i data-lucide="send"></i> Send WhatsApp</button>
         </div>
     </div>
 </div>
@@ -181,8 +154,8 @@
 
     <div id="submit-modal" class="modal-card hidden">
         <h3 style="margin:0 0 10px;">Submit Session?</h3>
-        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">You've answered all subjects. Check aggregate score now?</p>
-        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Finish</button>
+        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">Ready to see your 400-mark aggregate?</p>
+        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Submit</button>
         <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Not Yet</button>
     </div>
 
@@ -194,9 +167,8 @@
     </div>
 
     <div id="clear-modal" class="modal-card hidden">
-        <h3 style="margin:0 0 10px;">Reset App?</h3>
-        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">History and best scores will be lost forever.</p>
-        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Wipe Data</button>
+        <h3 style="margin:0 0 10px;">Reset Everything?</h3>
+        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Wipe Records</button>
         <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Cancel</button>
     </div>
 </div>
@@ -204,7 +176,6 @@
 <div class="nav-bar">
     <div class="nav-item active" onclick="switchTab('home', this)"><i data-lucide="home"></i><br>Home</div>
     <div id="nav-pract" class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
-    <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
 </div>
 
 <script>
@@ -222,13 +193,12 @@
         const hBox = document.getElementById('history-box');
         const clearBtn = document.getElementById('clear-data-btn');
         if (db.history.length > 0) { hBox.innerHTML = ""; clearBtn.classList.remove('hidden'); } 
-        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions.</div>"; clearBtn.classList.add('hidden'); }
+        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No history.</div>"; clearBtn.classList.add('hidden'); }
         db.history.slice().reverse().forEach(h => {
             const color = h.score >= 280 ? "var(--correct)" : (h.score >= 180 ? "var(--warn)" : "var(--wrong)");
-            const status = h.score >= 280 ? "PRO" : (h.score >= 180 ? "GOOD" : "REVIEW");
             const d = document.createElement('div');
             d.className = 'history-item';
-            d.innerHTML = `<div class="history-score-blob" style="background:${color}">${h.score}</div><div style="flex:1;"><div style="font-weight:900; font-size:14px;">${h.date}</div><div style="font-size:10px; opacity:0.6;">${h.subjectTags} • ${status}</div></div><i data-lucide='chevron-right' style='opacity:0.2; width:16px;'></i>`;
+            d.innerHTML = `<div class="history-score-blob" style="background:${color}">${h.score}</div><div style="flex:1;"><div style="font-weight:900; font-size:14px;">${h.date}</div><div style="font-size:10px; opacity:0.6;">${h.subjectTags}</div></div><i data-lucide='chevron-right' style='opacity:0.2; width:16px;'></i>`;
             d.onclick = () => { document.getElementById('detail-content').innerText = h.detail; document.getElementById('modal-container').classList.remove('hidden'); document.getElementById('receipt-modal').classList.remove('hidden'); lucide.createIcons(); };
             hBox.appendChild(d);
         });
@@ -244,7 +214,7 @@
     function toggleCalc() { document.getElementById('modal-container').classList.toggle('hidden'); document.getElementById('calc-modal').classList.toggle('hidden'); }
 
     function switchTab(t, el) {
-        ['home', 'practice', 'ideas'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
+        ['home', 'practice'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
         document.getElementById('tab-'+t).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
@@ -253,7 +223,7 @@
 
     function toggleTheme() { document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; lucide.createIcons(); }
 
-    function saveName() {
+function saveName() {
         const n = document.getElementById('username-in').value.trim();
         if(!n) return alert("Enter name!");
         db.name = n; refresh();
@@ -273,29 +243,33 @@
     });
 
     async function syncQuestions() {
-        if(!selected.length) return alert("Select at least 1 subject!");
+        if(!selected.length) return alert("Select subjects!");
         document.getElementById('setup-screen').classList.add('hidden');
         document.getElementById('loading-screen').classList.remove('hidden');
         const bar = document.getElementById('prog-bar');
         
         try {
-            let completed = 0;
+            let completedCount = 0;
             for(let s of selected) {
                 document.getElementById('loader-status').innerText = `Syncing ${s}...`;
+                
                 const res = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                 const json = await res.json();
+                
                 eData[s] = (json.data || []).slice(0, 40).map(q => ({
                     q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
                     opts: [q.option.a, q.option.b, q.option.c, q.option.d],
                     ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase())
                 }));
                 uAns[s] = {};
-                completed++;
-                bar.style.width = Math.round((completed / selected.length) * 100) + "%";
-                bar.innerText = bar.style.width;
+                
+                completedCount++;
+                let pct = Math.round((completedCount / selected.length) * 100);
+                bar.style.width = pct + "%";
+                bar.innerText = pct + "%";
             }
 
-            document.getElementById('loader-status').innerText = "Finalizing Sync...";
+            document.getElementById('loader-status').innerText = "Starting Exam...";
             let t = 3; const timer = setInterval(() => {
                 document.getElementById('countdown-sync').innerText = t; t--;
                 if(t < 0) {
@@ -305,14 +279,14 @@
                     renderTabs(); loadQ(); startTimer();
                 }
             }, 1000);
-        } catch { alert("Connection Error. Ensure data is on."); location.reload(); }
+        } catch { alert("Network Trip. Reload."); location.reload(); }
     }
 
     function renderTabs() {
         const c = document.getElementById('sub-tabs-bar'); c.innerHTML = "";
         selected.forEach(s => {
             const b = document.createElement('button');
-            b.innerText = s; b.style.cssText = `width:auto; padding:8px 18px; font-size:11px; border:none; border-radius:12px; background:${s===active?"#007bff":"#555"}; color:white; cursor:pointer; font-weight:bold;`;
+            b.innerText = s; b.style.cssText = `width:auto; padding:8px 18px; font-size:11px; border:none; border-radius:12px; background:${s===active?"#007bff":"#555"}; color:white; cursor:pointer;`;
             b.onclick = () => { active = s; currIdx = 0; renderTabs(); loadQ(); };
             c.appendChild(b);
         });
@@ -322,15 +296,15 @@
         const list = eData[active];
         const q = list[currIdx];
         document.getElementById('q-sub-title').innerText = active;
-        document.getElementById('q-progress-text').innerText = `${Object.keys(uAns[active]).length} / ${list.length} Answered`;
+        document.getElementById('q-progress-text').innerText = `${Object.keys(uAns[active]).length} / 40 Answered`;
         document.getElementById('question-box').innerHTML = q.q;
         const box = document.getElementById('options-box'); box.innerHTML = "";
         q.opts.forEach((o, i) => {
             const b = document.createElement('button');
             b.className = `opt-btn ${uAns[active][currIdx] === i ? 'selected' : ''}`;
             if(isReview) {
-                if(i === q.ans) b.classList.add('is-correct');
-                else if(uAns[active][currIdx] === i) b.classList.add('is-wrong');
+                if(i === q.ans) b.style.borderColor = "var(--correct)";
+                else if(uAns[active][currIdx] === i) b.style.borderColor = "var(--wrong)";
                 b.disabled = true;
             }
             b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
@@ -357,19 +331,8 @@
         });
     }
 
-    // FIXED NAVIGATION FUNCTIONS
-    function nextQ() { 
-        if (currIdx < eData[active].length - 1) { 
-            currIdx++; 
-            loadQ(); 
-        } 
-    }
-    function prevQ() { 
-        if (currIdx > 0) { 
-            currIdx--; 
-            loadQ(); 
-        } 
-    }
+    function nextQ() { if(currIdx < 39) { currIdx++; loadQ(); } }
+    function prevQ() { if(currIdx > 0) { currIdx--; loadQ(); } }
 
     function startTimer() {
         let t = 120 * 60;
@@ -383,19 +346,22 @@
 
     function submitCBT() {
         closeModals(); clearInterval(mainTimer);
-        let score = 0, totalQs = 0, log = "";
+        let score = 0, totalQs = selected.length * 40, log = "";
         selected.forEach(s => {
             let sScore = 0;
-            eData[s].forEach((q, i) => { totalQs++; if(uAns[s][i] === q.ans) { score++; sScore++; } });
+            eData[s].forEach((q, i) => { if(uAns[s][i] === q.ans) { score++; sScore++; } });
             log += `${s}: ${sScore}/40\n`;
         });
-        const p = Math.round((score / totalQs) * 400);
-        db.sessions++; if(p > db.best) db.best = p;
-        db.history.push({ date: new Date().toLocaleDateString(), score: p, detail: log, subjectTags: selected.map(s => s.substring(0,3)).join(', ') });
+        
+        // AGGREGATE CALCULATION
+        const aggregate = Math.round((score / totalQs) * 400);
+        
+        db.sessions++; if(aggregate > db.best) db.best = aggregate;
+        db.history.push({ date: new Date().toLocaleDateString(), score: aggregate, detail: log, subjectTags: selected.map(s => s.substring(0,3)).join(', ') });
         refresh();
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('final-percent').innerText = `${p} / 400`;
+        document.getElementById('final-aggregate').innerText = `${aggregate} / 400`;
         document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:15px;">${log}</pre>`;
     }
 
@@ -403,8 +369,6 @@
     function cPress(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function cClr() { document.getElementById('calc-display').value = '0'; }
     function cSolve() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value.replace('÷','/').replace('×','*')); } catch { document.getElementById('calc-display').value = "Err"; } }
-    function fillIdea(t) { document.getElementById('idea-msg').value = t; }
-    function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
 </script>
 </body>
 </html>
