@@ -9,142 +9,152 @@
         :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; --border: #d1d9e0; }
         [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; --border: #30363d; }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 90px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 90px; overflow-x: hidden; }
         #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
         .card { background: var(--card); padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
         .hidden { display: none !important; }
 
         /* Navigation */
-        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); }
+        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); transition: 0.2s; }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
-        /* Progress Loader */
+        /* Buttons & Inputs */
+        button.primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
+        button.primary-btn:active { transform: scale(0.97); }
+        input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
+
+        /* Progress Bar */
         .prog-outer { width: 100%; background: rgba(0,0,0,0.1); height: 26px; border-radius: 13px; margin: 20px 0; overflow: hidden; }
         .prog-inner { width: 0%; height: 100%; background: var(--accent); transition: 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
 
-        /* Subject Selection */
-        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .sub-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 14px; text-align: center; cursor: pointer; font-size: 13px; }
-        .sub-chip.selected { background: var(--accent); color: white; }
+        /* Subject Grid */
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 250px; overflow-y: auto; padding: 5px; }
+        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; transition: 0.2s; }
+        .sub-chip.selected { background: var(--accent); color: white; box-shadow: 0 6px 15px rgba(0,123,255,0.3); }
 
-        /* Question Grid (Answer Tracker) */
-        .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-top: 15px; max-height: 120px; overflow-y: auto; padding: 5px; background: rgba(0,0,0,0.03); border-radius: 12px; }
-        .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
+        /* Question Navigation */
+        .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 130px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; }
+        .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); transition: 0.2s; }
         .q-num.answered { background: var(--accent); color: white; border-color: var(--accent); }
-        .q-num.current { border: 2px solid var(--accent); font-weight: bold; }
+        .q-num.current { border: 2.5px solid var(--accent); font-weight: 900; }
 
-        /* Question UI */
-        #q-meta { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; display: flex; justify-content: space-between; }
-        #question-box { background: rgba(0,123,255,0.03); padding: 20px; border-radius: 18px; border-left: 5px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
-        .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 14px; cursor: pointer; transition: 0.2s; }
-        .opt-btn.selected { background: var(--accent) !important; color: white !important; border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,123,255,0.3); }
+        /* Exam Interface */
+        #q-meta { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 12px; display: flex; justify-content: space-between; text-transform: uppercase; }
+        #question-box { background: rgba(0,123,255,0.04); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
+        .opt-btn { background: var(--card); border: 2px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 18px; border-radius: 16px; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .opt-btn.selected { background: var(--accent) !important; color: white !important; border-color: var(--accent); font-weight: 600; }
 
-        /* Calculator Fixes */
-        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 28px; z-index: 2000; box-shadow: 0 25px 50px rgba(0,0,0,0.5); color: white; }
-        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 28px; margin-bottom: 15px; border-radius: 15px; }
-        .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; color: white; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-        .calc-btns button.op { background: #ff9f0a; font-weight: bold; }
-        .calc-close-btn { background: #ff3b30; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: white; }
+        /* History & Samples */
+        .history-item { background: var(--bg); padding: 16px; border-radius: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1.5px solid var(--border); }
+        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 13px; margin: 5px 3px; cursor: pointer; color: var(--accent); font-weight: 600; }
+
+        /* Calculator */
+        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 290px; background: #1c1c1e; padding: 22px; border-radius: 30px; z-index: 2000; box-shadow: 0 30px 60px rgba(0,0,0,0.6); color: white; }
+        .calc-screen { width: 100%; height: 65px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 30px; margin-bottom: 18px; border-radius: 15px; font-family: 'Courier New', Courier, monospace; }
+        .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .calc-btns button { padding: 0; background: #3a3a3c; border-radius: 50%; width: 52px; height: 52px; color: white; border: none; font-size: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+        .calc-btns button.op { background: #ff9f0a; font-size: 24px; }
+        .calc-cancel-btn { background: #ff3b30; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body data-theme="light">
 
 <div id="app-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 id="header-title" style="margin:0; font-weight: 800;">Home</h2>
-        <div onclick="toggleTheme()" style="cursor:pointer;"><i data-lucide="moon" id="theme-icon"></i></div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 id="header-title" style="margin:0; font-weight: 800; letter-spacing: -0.5px;">Home</h2>
+        <div onclick="toggleTheme()" style="cursor:pointer; padding: 6px;"><i data-lucide="moon" id="theme-icon"></i></div>
     </div>
 
     <div id="tab-home">
         <div class="card">
-            <h3>HELLO, <span id="user-display-name" style="color: var(--accent);">STUDENT</span></h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin: 20px 0;">
-                <div style="background:rgba(0,123,255,0.06); padding:15px; border-radius:18px; text-align:center;">
-                    <span style="font-size:11px; opacity:0.6; display:block;">SESSIONS</span>
-                    <b id="stat-sessions" style="font-size:24px; color:var(--accent);">0</b>
+            <h3 style="margin-top:0;">HELLO, <span id="user-display-name" style="color: var(--accent);">STUDENT</span></h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin: 25px 0;">
+                <div style="background:rgba(0,123,255,0.07); padding:18px; border-radius:20px; text-align:center;">
+                    <span style="font-size:11px; opacity:0.6; display:block; font-weight:bold;">SESSIONS</span>
+                    <b id="stat-sessions" style="font-size:26px; color:var(--accent);">0</b>
                 </div>
-                <div style="background:rgba(0,123,255,0.06); padding:15px; border-radius:18px; text-align:center;">
-                    <span style="font-size:11px; opacity:0.6; display:block;">HIGHEST %</span>
-                    <b id="stat-best" style="font-size:24px; color:var(--accent);">0%</b>
+                <div style="background:rgba(0,123,255,0.07); padding:18px; border-radius:20px; text-align:center;">
+                    <span style="font-size:11px; opacity:0.6; display:block; font-weight:bold;">TOP SCORE</span>
+                    <b id="stat-best" style="font-size:26px; color:var(--accent);">0%</b>
                 </div>
             </div>
-            <p style="font-weight:700; font-size:14px; margin-bottom:12px;">Recent Activity</p>
+            <p style="font-weight:800; font-size:15px; margin-bottom:15px;">Session History</p>
             <div id="history-box"></div>
         </div>
     </div>
 
     <div id="tab-practice" class="hidden">
         <div id="login-screen" class="card">
-            <h3>Vibe Login</h3>
-            <input type="text" id="username-in" placeholder="Full Name" style="width:100%; padding:15px; border-radius:14px; border:1px solid var(--border); margin-bottom:15px;">
-            <button onclick="saveName()" style="width:100%; background:var(--accent); color:white; border:none; padding:15px; border-radius:14px; font-weight:bold;">Enter Portal</button>
+            <h3>CBT Portal</h3>
+            <input type="text" id="username-in" placeholder="Your Full Name">
+            <button class="primary-btn" onclick="saveName()">Login to Vibe <i data-lucide="log-in" style="width:18px;"></i></button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>Setup CBT</h3>
+            <h3>Setup Session</h3>
             <div class="sub-grid" id="sub-list-setup"></div>
-            <button onclick="syncQuestions()" style="width:100%; background:var(--accent); color:white; border:none; padding:15px; border-radius:14px; font-weight:bold;">Generate 40/60 Qs <i data-lucide="zap"></i></button>
+            <button class="primary-btn" onclick="syncQuestions()">Generate Mock <i data-lucide="zap" style="width:18px;"></i></button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
             <h3 id="loader-status">Fetching Data...</h3>
             <div class="prog-outer"><div id="prog-bar" class="prog-inner">0%</div></div>
-            <div id="countdown-sync" style="font-size: 40px; font-weight: 900; color: var(--accent);"></div>
+            <div id="countdown-sync" style="font-size: 45px; font-weight: 900; color: var(--accent);"></div>
         </div>
 
         <div id="exam-screen" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <div id="exam-timer" style="color:red; font-weight:900; font-family:monospace; font-size:20px;">120:00</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:20px;">
+                <div id="exam-timer" style="color:#dc3545; font-weight:900; font-family:monospace; font-size:22px;">120:00</div>
                 <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
             </div>
-            <div id="sub-tabs-bar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:12px;"></div>
+            <div id="sub-tabs-bar" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:15px; border-bottom: 1px solid var(--border);"></div>
             
-            <div id="q-meta">
-                <span id="q-sub-title">Biology</span>
-                <span id="q-progress-text" style="opacity:0.6;">Answered: 0 / 40</span>
+            <div id="q-meta" style="margin-top:15px;">
+                <span id="q-sub-title">Subject</span>
+                <span id="q-progress-text">0 / 40</span>
             </div>
             <div id="question-box"></div>
             <div id="options-box"></div>
 
-            <div style="display: flex; gap: 10px; margin-top:20px;">
-                <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:12px; border-radius:12px;">Back</button>
-                <button onclick="nextQ()" style="background:var(--accent); color:white; border:none; flex:1; padding:12px; border-radius:12px;">Next</button>
+            <div style="display: flex; gap: 12px; margin-top:25px;">
+                <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Back</button>
+                <button onclick="nextQ()" style="background:var(--accent); color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Next</button>
             </div>
 
             <div class="q-nav-grid" id="q-nav-grid"></div>
-
-            <button onclick="submitCBT()" style="background:#dc3545; color:white; border:none; width:100%; padding:15px; border-radius:14px; margin-top:20px; font-weight:bold;">Submit All Subjects</button>
+            <button onclick="submitCBT()" style="background:#dc3545; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800; box-shadow: 0 4px 15px rgba(220,53,69,0.3);">Submit Final Result</button>
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <h1 id="final-percent" style="font-size: 50px; color: #28a745; margin: 10px 0;">0%</h1>
-            <div id="breakdown-list" style="margin-bottom: 20px; text-align: left;"></div>
-            <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:15px; border-radius:14px; width:100%;">Return to Home</button>
+            <p style="font-weight: bold; opacity: 0.6;">Your Performance</p>
+            <h1 id="final-percent" style="font-size: 60px; color: #28a745; margin: 15px 0;">0%</h1>
+            <div id="breakdown-list" style="margin-bottom: 30px; text-align: left;"></div>
+            <button class="primary-btn" onclick="location.reload()" style="background:#28a745;">Dashboard Home</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
-            <h3>Vibe Ideas</h3>
-            <div style="margin-bottom:15px;">
-                <div class="sub-chip" style="display:inline-block; margin:4px; font-size:11px;" onclick="fillIdea('Add more 2024 Past Questions')">?? More Qs</div>
-                <div class="sub-chip" style="display:inline-block; margin:4px; font-size:11px;" onclick="fillIdea('Calculator is a bit slow')">? Fix Calc</div>
-                <div class="sub-chip" style="display:inline-block; margin:4px; font-size:11px;" onclick="fillIdea('I love the UI!')">?? Love it</div>
+            <h3>Do you have a feedback</h3>
+            <p style="font-size:13px; opacity:0.7; margin-bottom:12px;">Samples (Tap to select):</p>
+            <div style="margin-bottom:20px;">
+                <div class="sample-chip" onclick="fillIdea('Add more 2026 practice questions')">Add 2026 Qs</div>
+                <div class="sample-chip" onclick="fillIdea('The calculator is a bit slow on my phone')">Fix Calculator</div>
+                <div class="sample-chip" onclick="fillIdea('I love the UI design!')">Review App</div>
             </div>
-            <textarea id="idea-msg" placeholder="Tell the admin your idea..." style="width:100%; height:120px; border-radius:15px; padding:15px; border:1px solid var(--border);"></textarea>
-            <button onclick="sendIdea()" style="width:100%; background:#25D366; color:white; border:none; padding:15px; border-radius:14px; margin-top:10px;">Send via WhatsApp</button>
+            <textarea id="idea-msg" placeholder="Write your feedback here..."></textarea>
+            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366; box-shadow: 0 4px 12px rgba(37,211,102,0.3);"><i data-lucide="send"></i> Send WhatsApp</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <span style="font-size:10px; opacity:0.5; font-weight:bold;">VIBE CBT CALC</span>
-        <div class="calc-close-btn" onclick="toggleCalc()"><i data-lucide="x" style="width:16px;"></i></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <span style="font-size:11px; opacity:0.5; font-weight:bold; color: white;">JAMB CALC</span>
+        <button class="calc-cancel-btn" onclick="toggleCalc()"><i data-lucide="x" style="width:16px;"></i></button>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
@@ -156,7 +166,7 @@
         <button onclick="cPress('+')" class="op">+</button>
         <button onclick="cPress('4')">4</button><button onclick="cPress('5')">5</button><button onclick="cPress('6')">6</button>
         <button onclick="cSolve()" class="op">=</button>
-        <button onclick="cPress('1')">1</button><button onclick="press('2')">2</button><button onclick="cPress('3')">3</button><button onclick="cPress('0')">0</button>
+        <button onclick="cPress('1')">1</button><button onclick="cPress('2')">2</button><button onclick="cPress('3')">3</button><button onclick="cPress('0')">0</button>
     </div>
 </div>
 
@@ -168,7 +178,7 @@
 
 <script>
     const KEY = "ALOC-37270319fe62227b783f";
-    const SUBS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography", "History", "Agricultural Science"];
+    const SUBS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography", "History", "Agricultural Science", "CRS", "IRS", "Civic Education", "Accounting", "French", "Arabic", "Yoruba", "Igbo", "Hausa"];
     
     let store = JSON.parse(localStorage.getItem('vibe_master_db')) || { name: "", sessions: 0, best: 0, history: [] };
     let eData = {}, uAns = {}, selected = [], active = "", currIdx = 0;
@@ -178,12 +188,12 @@
         document.getElementById('stat-sessions').innerText = store.sessions;
         document.getElementById('stat-best').innerText = store.best + "%";
         const hBox = document.getElementById('history-box');
-        hBox.innerHTML = store.history.length ? "" : "<p style='font-size:12px; opacity:0.4; text-align:center;'>No history yet.</p>";
+        hBox.innerHTML = store.history.length ? "" : "<p style='font-size:12px; opacity:0.4; text-align:center;'>No history found.</p>";
         store.history.slice().reverse().forEach(h => {
             const d = document.createElement('div');
-            d.style.cssText = "background:var(--card); padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; border:1px solid var(--border);";
-            d.innerHTML = `<span><b>${h.score}%</b> <small style='opacity:0.5'>${h.date}</small></span><i data-lucide='chevron-right' style='width:14px;'></i>`;
-            d.onclick = () => alert(h.detail);
+            d.className = 'history-item';
+            d.innerHTML = `<span><b>${h.score}%</b> <small style='opacity:0.6; margin-left:10px;'>${h.date}</small></span><i data-lucide='chevron-right' style='width:16px; opacity:0.4;'></i>`;
+            d.onclick = () => alert(`Detail Breakdown:\n\n${h.detail}`);
             hBox.appendChild(d);
         });
         localStorage.setItem('vibe_master_db', JSON.stringify(store));
@@ -196,7 +206,7 @@
         document.getElementById('tab-'+t).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
-        document.getElementById('header-title').innerText = t.charAt(0).toUpperCase() + t.slice(1);
+        document.getElementById('header-title').innerText = t === 'home' ? 'Home' : (t === 'practice' ? 'Practice' : 'Feedback');
     }
 
     function toggleTheme() {
@@ -207,7 +217,7 @@
 
     function saveName() {
         const n = document.getElementById('username-in').value.trim();
-        if(!n) return alert("Enter name!");
+        if(!n) return alert("Please enter your name!");
         store.name = n; refresh();
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('setup-screen').classList.remove('hidden');
@@ -235,14 +245,12 @@
         try {
             for(let s of selected) {
                 document.getElementById('loader-status').innerText = `Fetching ${s}...`;
-                // Use the API normally, then we handle the slice
                 const res = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                 const json = await res.json();
                 
-                // FORCE COUNTS: 60 for English, 40 for others
                 let targetCount = (s === "English") ? 60 : 40;
                 eData[s] = json.data.slice(0, targetCount).map(q => ({
-                    q: q.question.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"'),
+                    q: q.question.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/[^\x00-\x7F]/g, ""),
                     opts: [q.option.a, q.option.b, q.option.c, q.option.d],
                     ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase())
                 }));
@@ -255,7 +263,7 @@
             document.getElementById('loader-status').innerText = "Syncing Final Data...";
             let t = 3; const cd = document.getElementById('countdown-sync'); cd.innerText = t;
             const timer = setInterval(() => {
-                t--; cd.innerText = t || "START!";
+                t--; cd.innerText = t || "GO!";
                 if(t < 0) {
                     clearInterval(timer);
                     active = selected[0];
@@ -264,14 +272,14 @@
                     renderTabs(); loadQ(); startTimer();
                 }
             }, 800);
-        } catch { alert("API Offline or Network Busy."); location.reload(); }
+        } catch { alert("Connection Error. Ensure data is on."); location.reload(); }
     }
 
     function renderTabs() {
         const c = document.getElementById('sub-tabs-bar'); c.innerHTML = "";
         selected.forEach(s => {
             const b = document.createElement('button');
-            b.innerText = s; b.style.cssText = `width:auto; padding:8px 15px; font-size:11px; border:none; border-radius:10px; background:${s===active?"#007bff":"#555"}; color:white;`;
+            b.innerText = s; b.style.cssText = `width:auto; padding:10px 20px; font-size:11px; border:none; border-radius:12px; background:${s===active?"#007bff":"#555"}; color:white; cursor:pointer; font-weight:bold; transition:0.2s;`;
             b.onclick = () => { active = s; currIdx = 0; renderTabs(); loadQ(); };
             c.appendChild(b);
         });
@@ -280,9 +288,9 @@
     function loadQ() {
         const list = eData[active];
         const q = list[currIdx];
-        let ansCount = Object.keys(uAns[active]).length;
+        let answeredTotal = Object.keys(uAns[active]).length;
         document.getElementById('q-sub-title').innerText = active;
-        document.getElementById('q-progress-text').innerText = `Answered: ${ansCount} / ${list.length}`;
+        document.getElementById('q-progress-text').innerText = `${answeredTotal} / ${list.length} Answered`;
         document.getElementById('question-box').innerHTML = q.q;
         const box = document.getElementById('options-box'); box.innerHTML = "";
         q.opts.forEach((o, i) => {
@@ -307,7 +315,7 @@
     }
 
     function nextQ() { if(currIdx < eData[active].length-1) { currIdx++; loadQ(); } }
-    function prevQ() { if(currIdx > 0) { currIdx--; loadQ(); } }
+    function prevQ() { if(currIdx > 0) { currentIdx--; loadQ(); } }
 
     function startTimer() {
         let t = 120 * 60;
@@ -333,15 +341,20 @@
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('final-percent').innerText = p + "%";
-        document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:12px;">${log}</pre>`;
+        document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.06); padding:20px; border-radius:18px; font-weight:bold; line-height:1.5;">${log}</pre>`;
     }
 
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
     function cPress(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function cClr() { document.getElementById('calc-display').value = '0'; }
     function cSolve() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value.replace('÷','/').replace('×','*')); } catch { document.getElementById('calc-display').value = "Err"; } }
+    
     function fillIdea(t) { document.getElementById('idea-msg').value = t; }
-    function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
+    function sendIdea() { 
+        const msg = document.getElementById('idea-msg').value;
+        if(!msg) return alert("Write something first!");
+        window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(msg)}`); 
+    }
 </script>
 </body>
 </html>
