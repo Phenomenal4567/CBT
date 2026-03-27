@@ -9,8 +9,8 @@
         :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; }
         [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; }
         
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 85px; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 85px; overflow-x: hidden; }
         #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
         .card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; width: 100%; }
@@ -18,78 +18,81 @@
 
         /* Navigation */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; color: var(--text); }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; transition: 0.2s; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
+        .nav-item i { margin-bottom: 4px; }
 
-        /* Progress Bar */
-        .progress-outer { width: 100%; background: rgba(0,0,0,0.1); height: 20px; border-radius: 10px; margin: 15px 0; position: relative; overflow: hidden; }
-        .progress-inner { width: 0%; height: 100%; background: var(--accent); transition: 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; }
+        /* Dashboard Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .stat-card { background: rgba(0,123,255,0.05); padding: 15px; border-radius: 15px; text-align: center; }
+        .stat-card b { font-size: 20px; display: block; color: var(--accent); }
 
-        /* Buttons & Chips */
-        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
-        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; }
+        /* Buttons & Grid */
+        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
+        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
         .subject-chip.selected { background: var(--accent); color: white; }
-        .idea-chip { display: inline-block; padding: 6px 12px; background: rgba(0,123,255,0.1); border-radius: 20px; font-size: 12px; margin: 4px; cursor: pointer; color: var(--accent); border: 1px solid var(--accent); }
 
-        /* History List */
-        .history-item { background: var(--bg); padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        /* Exam UI */
+        .opt-btn { background: transparent; border: 1.5px solid #d1d9e0; color: var(--text); text-align: left; margin-bottom: 10px; width: 100%; padding: 14px; border-radius: 12px; cursor: pointer; }
+        .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.1); }
+        #timer-box { font-family: monospace; font-size: 18px; color: #d32f2f; background: rgba(211,47,47,0.1); padding: 8px 12px; border-radius: 10px; }
 
         /* Calculator */
         #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 15px; border-radius: 12px; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
-        .calc-close { background: #ff3b30 !important; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .calc-btns button { padding: 15px; margin:0; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
+
+        /* Countdown Loader */
+        #loading-count { font-size: 48px; font-weight: bold; color: var(--accent); margin: 20px 0; }
     </style>
 </head>
 <body data-theme="light">
 
 <div id="app-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 id="header-title" style="margin:0;">Home</h2>
+        <h2 id="header-title" style="margin:0;">Dashboard</h2>
         <div onclick="toggleTheme()" id="theme-icon" style="cursor:pointer;"><i data-lucide="moon"></i></div>
     </div>
 
     <div id="tab-dash">
         <div class="card">
-            <h3>Hello, <span id="display-name">Learner</span></h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">
-                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
-                    <span>Total Sessions</span><b id="stat-sessions" style="display:block; font-size:20px; color:var(--accent);">0</b>
-                </div>
-                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
-                    <span>Top Score</span><b id="stat-best" style="display:block; font-size:20px; color:var(--accent);">0%</b>
-                </div>
+            <h3>Welcome Back, <span id="display-name">Student</span></h3>
+            <div class="stat-grid">
+                <div class="stat-card"><span>Sessions</span><b id="stat-sessions">0</b></div>
+                <div class="stat-card"><span>Best Score</span><b id="stat-best">0%</b></div>
             </div>
-            
-            <p style="font-weight:bold; font-size:14px; margin-bottom:10px;">Session History (Click to view)</p>
-            <div id="history-list"></div>
+            <p style="font-size: 13px; margin-bottom: 5px;">Recent Result:</p>
+            <div id="recent-result" style="padding:15px; border-radius:12px; border:1px dashed #ccc; font-size:14px; text-align:center;">
+                No sessions completed yet.
+            </div>
+            <button onclick="switchTab('exam', document.getElementById('nav-exam'))"><i data-lucide="play"></i> Start Practice</button>
         </div>
     </div>
 
     <div id="tab-exam" class="hidden">
         <div id="login-screen" class="card">
-            <h3>Portal Login</h3>
-            <input type="text" id="username" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
-            <button onclick="saveUser()">Enter</button>
+            <h3>Student Login</h3>
+            <input type="text" id="username" placeholder="Enter Full Name" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
+            <button onclick="saveUser()">Login & Sync</button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>Select Subjects</h3>
+            <h3>CBT Setup</h3>
             <div class="subject-grid" id="subject-list"></div>
-            <button onclick="startExam()"><i data-lucide="zap"></i> Start Generating</button>
+            <button onclick="startExam()"><i data-lucide="zap"></i> Prepare Questions</button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
-            <h3 id="loading-title">Downloading Questions</h3>
-            <div class="progress-outer"><div id="load-progress" class="progress-inner">0%</div></div>
-            <p id="loading-status" style="font-size:12px; opacity:0.6;">API Connection established...</p>
+            <h3>Generating Exam...</h3>
+            <div id="loading-count">5</div>
+            <p style="font-size:12px; opacity:0.6;">Connecting to JAMB API</p>
         </div>
 
         <div id="exam-screen" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <div id="timer-box" style="font-family:monospace; color:red; font-weight:bold;">120:00</div>
+                <div id="timer-box">120:00</div>
                 <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
             </div>
             <div id="active-tabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px;"></div>
@@ -103,39 +106,35 @@
         </div>
 
         <div id="result-screen" class="card hidden">
-            <h2 style="text-align:center;">Scorecard</h2>
-            <div id="result-summary" style="text-align:center; padding:20px;"></div>
-            <div id="review-prompt" style="text-align:center; padding:10px; background:rgba(0,123,255,0.05); border-radius:12px; margin-bottom:15px;">
-                <p style="font-size:14px;">Would you like to review the questions you got wrong?</p>
-                <button onclick="startReview()" style="background:#6c757d; font-size:12px; width:auto; display:inline-flex;">Yes, Review Now</button>
-            </div>
-            <button onclick="location.reload()" style="background:#28a745;">Go to Home</button>
+            <h2 style="text-align:center;">Exam Result</h2>
+            <div id="result-summary" style="text-align:center; padding:20px; font-size:18px;"></div>
+            <button onclick="location.reload()" style="background:#28a745;">Back to Dashboard</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
             <h3>Vibe Suggestions</h3>
-            <div style="margin-bottom:15px;">
-                <span class="idea-chip" onclick="fillIdea('I want more past questions for Literature')">?? More Questions</span>
-                <span class="idea-chip" onclick="fillIdea('The timer should have a sound alert')">? Timer Sound</span>
-                <span class="idea-chip" onclick="fillIdea('Fix the calculation error in Physics')">?? Physics Fix</span>
-                <span class="idea-chip" onclick="fillIdea('Add a dark mode button inside the exam')">?? Exam Darkmode</span>
+            <p style="font-size:14px; opacity:0.7;">Tap a quick idea:</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
+                <span onclick="fillIdea('Add more Biology explanations')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Explanations</span>
+                <span onclick="fillIdea('Calculator is glitchy on mobile')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Fix Calc</span>
+                <span onclick="fillIdea('The timer is too fast')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Timer</span>
             </div>
-            <textarea id="feedback-text" placeholder="Tell us your idea..." style="width:100%; height:120px; border-radius:12px; padding:10px; border:1.5px solid #ccc;"></textarea>
+            <textarea id="feedback-text" placeholder="Type your idea..." style="width:100%; height:120px; border-radius:12px; padding:10px;"></textarea>
             <button onclick="sendFeedback()"><i data-lucide="send"></i> Send Idea</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:15px; align-items:center;">
-        <span style="font-weight:bold;">JAMB CALC</span>
-        <div class="calc-close" onclick="toggleCalc()">?</div>
+    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:15px;">
+        <span>JAMB CALC</span>
+        <span onclick="toggleCalc()" style="cursor:pointer;">?</span>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
-        <button onclick="clr()">C</button><button onclick="press('/')" style="background:#ff9f0a;">÷</button><button onclick="press('*')" style="background:#ff9f0a;">×</button><button onclick="press('-')" style="background:#ff9f0a;">?</button>
+        <button onclick="clr()" style="background:#acacaf; color:black;">AC</button><button onclick="press('/')" style="background:#ff9f0a;">÷</button><button onclick="press('*')" style="background:#ff9f0a;">×</button><button onclick="press('-')" style="background:#ff9f0a;">?</button>
         <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button onclick="press('+')" style="background:#ff9f0a;">+</button>
         <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button onclick="calculate()" style="background:#ff9f0a;">=</button>
         <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button onclick="press('0')">0</button>
@@ -144,33 +143,27 @@
 
 <div class="nav-bar">
     <div class="nav-item active" onclick="switchTab('dash', this)"><i data-lucide="home"></i><br>Home</div>
-    <div id="nav-exam" class="nav-item" onclick="switchTab('exam', this)"><i data-lucide="pencil"></i><br>Practice</div>
+    <div id="nav-exam" class="nav-item" onclick="switchTab('exam', this)"><i data-lucide="book-open"></i><br>Practice</div>
     <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
 </div>
 
 <script>
+    // --- APP STATE & STORAGE ---
     const API_TOKEN = "ALOC-37270319fe62227b783f";
     const SUBJECTS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography"];
     
-    let stats = JSON.parse(localStorage.getItem('jamb_vibe_stats')) || { sessions: 0, best: 0, history: [] };
+    let stats = JSON.parse(localStorage.getItem('jamb_vibe_stats')) || { sessions: 0, best: 0, last: "" };
     let examData = {}, userAnswers = {}, selectedSubs = [], activeSub = "", currentIdx = 0;
 
     function updateStats() {
         document.getElementById('stat-sessions').innerText = stats.sessions;
         document.getElementById('stat-best').innerText = stats.best + "%";
-        
-        const hList = document.getElementById('history-list');
-        hList.innerHTML = stats.history.length ? "" : "<p style='font-size:12px; opacity:0.5'>No history found.</p>";
-        stats.history.slice().reverse().forEach((item, idx) => {
-            const div = document.createElement('div');
-            div.className = 'history-item';
-            div.innerHTML = `<span>${item.date}</span><b>${item.score}%</b>`;
-            div.onclick = () => alert(`Session Detail:\n${item.detail}`);
-            hList.appendChild(div);
-        });
+        if(stats.last) document.getElementById('recent-result').innerHTML = `<b>Last Session:</b> ${stats.last}`;
         localStorage.setItem('jamb_vibe_stats', JSON.stringify(stats));
     }
     updateStats();
+
+    // Icon Rendering
     lucide.createIcons();
 
     function fillIdea(t) { document.getElementById('feedback-text').value = t; }
@@ -184,11 +177,14 @@
     }
 
     function toggleTheme() {
-        document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-        document.getElementById('theme-icon').innerHTML = `<i data-lucide="${document.body.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+        const b = document.body;
+        const current = b.dataset.theme;
+        b.dataset.theme = current === 'dark' ? 'light' : 'dark';
+        document.getElementById('theme-icon').innerHTML = `<i data-lucide="${b.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
         lucide.createIcons();
     }
 
+    // Build Subjects
     const list = document.getElementById('subject-list');
     SUBJECTS.forEach(s => {
         const d = document.createElement('div');
@@ -213,8 +209,14 @@
         document.getElementById('setup-screen').classList.add('hidden');
         document.getElementById('loading-screen').classList.remove('hidden');
 
-        let completed = 0;
-        const progressBar = document.getElementById('load-progress');
+        // Countdown logic
+        let count = 5;
+        const cBox = document.getElementById('loading-count');
+        const cd = setInterval(() => {
+            count--;
+            cBox.innerText = count;
+            if(count <= 0) clearInterval(cd);
+        }, 800);
 
         try {
             for(let s of selectedSubs) {
@@ -222,10 +224,6 @@
                 const d = await r.json();
                 examData[s] = d.data.map(q => ({ q: q.question, opts: [q.option.a, q.option.b, q.option.c, q.option.d], ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase()) }));
                 userAnswers[s] = {};
-                completed++;
-                let percent = Math.round((completed / selectedSubs.length) * 100);
-                progressBar.style.width = percent + "%";
-                progressBar.innerText = percent + "%";
             }
             activeSub = selectedSubs[0];
             document.getElementById('loading-screen').classList.add('hidden');
@@ -272,31 +270,26 @@
     }
 
     function finishExam() {
-        let score = 0, total = 0, detail = "";
-        selectedSubs.forEach(s => { 
-            let sScore = 0;
-            examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) { score++; sScore++; } });
-            detail += `${s}: ${sScore}/${examData[s].length}\n`;
-        });
+        let score = 0, total = 0;
+        selectedSubs.forEach(s => { examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) score++; }); });
+        
         const percent = Math.round((score/total)*100);
         stats.sessions++;
         if(percent > stats.best) stats.best = percent;
-        stats.history.push({ date: new Date().toLocaleDateString(), score: percent, detail: detail });
+        stats.last = `${selectedSubs.join('/')}: ${score}/${total} (${percent}%)`;
         updateStats();
 
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('result-summary').innerHTML = `<h1 style="color:#28a745">${percent}%</h1><p>Scored ${score} / ${total}</p><pre style="font-size:12px; background:#eee; padding:10px; border-radius:10px;">${detail}</pre>`;
+        document.getElementById('result-summary').innerHTML = `<h1 style="color:#28a745">${percent}%</h1><p>You scored ${score} out of ${total}</p>`;
     }
 
-    function startReview() {
-        alert("Review Mode: Red options are your mistakes, correct answers are highlighted in blue. (Coming in next patch!)");
-    }
-
+    // Calc Engine
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
     function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function clr() { document.getElementById('calc-display').value = '0'; }
-    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Err"; } }
+    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Error"; } }
+
     function sendFeedback() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('feedback-text').value)}`); }
 </script>
 </body>
