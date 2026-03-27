@@ -18,7 +18,7 @@
 
         /* Navigation */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); transition: 0.2s; }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
         /* Buttons */
@@ -26,12 +26,13 @@
         .primary-btn:active { transform: scale(0.97); }
         input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
 
-        /* History */
-        .history-score-blob { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; }
-        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        /* SUBJECT GRID - SCROLLABLE AS BEFORE */
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding: 5px; border-radius: 12px; }
+        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; transition: 0.2s; }
+        .sub-chip.selected { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
 
         /* Question UI */
-        .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; transition: 0.15s; font-size: 15px; display: flex; align-items: center; gap: 12px; }
+        .opt-btn { background: var(--card); border: 2px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; transition: 0.15s; font-size: 15px; display: flex; align-items: center; gap: 12px; }
         .opt-letter { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
         .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.05); }
         .opt-btn.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
@@ -48,10 +49,16 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { width: 100%; max-width: 350px; background: var(--card); border-radius: 28px; padding: 25px; color: var(--text); border: 1px solid var(--border); text-align: center; }
 
+        /* History Score Blob */
+        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .history-score-blob { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; }
+
+        /* Samples */
+        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 700; transition: 0.2s; }
+
+        /* Loader */
         .prog-outer { width: 100%; background: rgba(0,0,0,0.1); height: 26px; border-radius: 13px; margin: 20px 0; overflow: hidden; }
         .prog-inner { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold; }
-
-        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 700; }
     </style>
 </head>
 <body data-theme="light">
@@ -93,7 +100,7 @@
 
         <div id="setup-screen" class="card hidden">
             <h3>Select Subjects</h3>
-            <div id="sub-list-setup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;"></div>
+            <div class="sub-grid" id="sub-list-setup"></div>
             <button class="primary-btn" onclick="syncQuestions()">GENERATE SESSION <i data-lucide="zap"></i></button>
         </div>
 
@@ -115,7 +122,7 @@
             </div>
             <div id="question-box" style="margin: 15px 0; padding: 20px; background: rgba(0,0,0,0.02); border-left: 5px solid var(--accent); border-radius: 10px;"></div>
             <div id="options-box"></div>
-            <div style="display: flex; gap: 12px; margin-top:25px;">
+            <div style="display: flex; gap: 10px; margin-top:25px;">
                 <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Back</button>
                 <button onclick="nextQ()" style="background:var(--accent); color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Next</button>
             </div>
@@ -125,7 +132,7 @@
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <p style="font-weight:bold; opacity:0.6;">Aggregate Score</p>
+            <p style="font-weight:bold; opacity:0.6;">Mock Result Summary</p>
             <h1 id="final-percent" style="font-size: 55px; color: #28a745; margin: 10px 0;">0 / 400</h1>
             <div id="breakdown-list" style="margin-bottom: 25px; text-align: left; font-size: 14px;"></div>
             <button onclick="startReview()" style="background:#6c757d; color:white; border:none; padding:16px; border-radius:14px; width:100%; margin-bottom: 10px; font-weight:bold;">Review Mistakes</button>
@@ -150,7 +157,7 @@
 <div id="modal-container" class="modal-overlay hidden">
     <div id="calc-modal" class="modal-card hidden" style="background: #1c1c1e; width: 290px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; color: white;">
-            <span style="font-size:10px; opacity:0.5; font-weight:bold;">VIBE CALC</span>
+            <span style="font-size:10px; opacity:0.5; font-weight:bold;">JAMB VIBE CALC</span>
             <div onclick="closeModals()" style="background:#ff3b30; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer;">?</div>
         </div>
         <input type="text" id="calc-display" style="width:100%; height:60px; background:#000; color:#fff; border:none; text-align:right; padding:15px; font-size:28px; margin-bottom:18px; border-radius:12px; font-family:monospace;" readonly value="0">
@@ -164,9 +171,9 @@
 
     <div id="submit-modal" class="modal-card hidden">
         <h3 style="margin:0 0 10px;">Submit Exam?</h3>
-        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">Finished all subjects?</p>
-        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Submit</button>
-        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Back</button>
+        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">Review your answers carefully.</p>
+        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Submit Now</button>
+        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Not Yet, Back</button>
     </div>
 
     <div id="receipt-modal" class="modal-card hidden">
@@ -178,7 +185,8 @@
 
     <div id="clear-modal" class="modal-card hidden">
         <h3 style="margin:0 0 10px;">Clear Everything?</h3>
-        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Yes, Clear</button>
+        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">This deletes all history and your best score.</p>
+        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Yes, Clear All</button>
         <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Cancel</button>
     </div>
 </div>
@@ -202,9 +210,9 @@
         document.getElementById('stat-sessions').innerText = db.sessions;
         document.getElementById('stat-best').innerText = db.best + " / 400";
         const hBox = document.getElementById('history-box');
-        const clr = document.getElementById('clear-data-btn');
-        if (db.history.length > 0) { hBox.innerHTML = ""; clr.classList.remove('hidden'); } 
-        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions yet.</div>"; clr.classList.add('hidden'); }
+        const clearBtn = document.getElementById('clear-data-btn');
+        if (db.history.length > 0) { hBox.innerHTML = ""; clearBtn.classList.remove('hidden'); } 
+        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions yet.</div>"; clearBtn.classList.add('hidden'); }
         db.history.slice().reverse().forEach(h => {
             const color = h.score >= 280 ? "var(--correct)" : (h.score >= 180 ? "var(--warn)" : "var(--wrong)");
             const d = document.createElement('div');
@@ -246,10 +254,9 @@
     SUBS.forEach(s => {
         const c = document.createElement('div');
         c.className = 'sub-chip'; c.innerText = s;
-        c.style.cssText = "padding:14px; border:2px solid var(--accent); border-radius:16px; text-align:center; cursor:pointer; font-size:13px; background:var(--card); font-weight:600;";
         c.onclick = () => {
-            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.style.background = ""; c.style.color = ""; }
-            else if(selected.length < 4) { selected.push(s); c.style.background = "var(--accent)"; c.style.color = "white"; }
+            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.classList.remove('selected'); }
+            else if(selected.length < 4) { selected.push(s); c.classList.add('selected'); }
         };
         gridSetup.appendChild(c);
     });
@@ -261,13 +268,11 @@
         const bar = document.getElementById('prog-bar');
         
         try {
-            // SEQUENTIAL FETCH (More stable for mobile data)
             let completed = 0;
             for(let s of selected) {
                 document.getElementById('loader-status').innerText = `Syncing ${s}...`;
                 const res = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                 const json = await res.json();
-                
                 eData[s] = (json.data || []).slice(0, 40).map(q => ({
                     q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
                     opts: [q.option.a, q.option.b, q.option.c, q.option.d],
@@ -279,7 +284,7 @@
                 bar.innerText = bar.style.width;
             }
 
-            document.getElementById('loader-status').innerText = "Almost Ready...";
+            document.getElementById('loader-status').innerText = "Finalizing Sync...";
             let t = 3; const timer = setInterval(() => {
                 document.getElementById('countdown-sync').innerText = t; t--;
                 if(t < 0) {
@@ -289,7 +294,7 @@
                     renderTabs(); loadQ(); startTimer();
                 }
             }, 1000);
-        } catch { alert("Connection slow. Check internet."); location.reload(); }
+        } catch { alert("Network Error. Check internet."); location.reload(); }
     }
 
     function renderTabs() {
