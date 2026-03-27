@@ -16,44 +16,43 @@
         .card { background: var(--card); padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
         .hidden { display: none !important; }
 
-        /* Navigation */
+        /* Navigation Bar */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
         .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); transition: 0.2s; }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
         /* Buttons & Inputs */
-        button.primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
-        button.primary-btn:active { transform: scale(0.97); }
+        button.primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
         input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
 
-        /* Progress Bar */
+        /* Progress Bar (Percentage) */
         .prog-outer { width: 100%; background: rgba(0,0,0,0.1); height: 26px; border-radius: 13px; margin: 20px 0; overflow: hidden; }
         .prog-inner { width: 0%; height: 100%; background: var(--accent); transition: 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
 
-        /* Subject Grid */
+        /* Subject Selection Grid */
         .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 250px; overflow-y: auto; padding: 5px; }
-        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; transition: 0.2s; }
-        .sub-chip.selected { background: var(--accent); color: white; box-shadow: 0 6px 15px rgba(0,123,255,0.3); }
+        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
+        .sub-chip.selected { background: var(--accent); color: white; }
 
-        /* Question Navigation */
+        /* History & Samples (Clean text) */
+        .history-item { background: var(--bg); padding: 16px; border-radius: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1.5px solid var(--border); }
+        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 700; }
+
+        /* Question Navigation Grid */
         .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 130px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; }
-        .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); transition: 0.2s; }
+        .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
         .q-num.answered { background: var(--accent); color: white; border-color: var(--accent); }
         .q-num.current { border: 2.5px solid var(--accent); font-weight: 900; }
 
-        /* Exam Interface */
-        #q-meta { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 12px; display: flex; justify-content: space-between; text-transform: uppercase; }
+        /* Exam UI */
+        #q-meta { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 12px; display: flex; justify-content: space-between; }
         #question-box { background: rgba(0,123,255,0.04); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
-        .opt-btn { background: var(--card); border: 2px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 18px; border-radius: 16px; cursor: pointer; transition: 0.2s; font-size: 15px; }
-        .opt-btn.selected { background: var(--accent) !important; color: white !important; border-color: var(--accent); font-weight: 600; }
+        .opt-btn { background: var(--card); border: 2px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 18px; border-radius: 16px; cursor: pointer; transition: 0.2s; }
+        .opt-btn.selected { background: var(--accent) !important; color: white !important; border-color: var(--accent); }
 
-        /* History & Samples */
-        .history-item { background: var(--bg); padding: 16px; border-radius: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1.5px solid var(--border); }
-        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 3px; cursor: pointer; color: var(--accent); font-weight: 700; transition: 0.2s; }
-
-        /* Calculator */
+        /* Calculator UI */
         #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 290px; background: #1c1c1e; padding: 22px; border-radius: 30px; z-index: 2000; box-shadow: 0 30px 60px rgba(0,0,0,0.6); color: white; }
-        .calc-screen { width: 100%; height: 65px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 30px; margin-bottom: 18px; border-radius: 15px; font-family: monospace; }
+        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 28px; margin-bottom: 18px; border-radius: 15px; font-family: monospace; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .calc-btns button { padding: 0; background: #3a3a3c; border-radius: 50%; width: 52px; height: 52px; color: white; border: none; font-size: 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
         .calc-btns button.op { background: #ff9f0a; font-size: 24px; }
@@ -64,7 +63,7 @@
 
 <div id="app-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h2 id="header-title" style="margin:0; font-weight: 800; letter-spacing: -0.5px;">Home</h2>
+        <h2 id="header-title" style="margin:0; font-weight: 800;">Home</h2>
         <div onclick="toggleTheme()" style="cursor:pointer; padding: 6px;"><i data-lucide="moon" id="theme-icon"></i></div>
     </div>
 
@@ -89,14 +88,14 @@
     <div id="tab-practice" class="hidden">
         <div id="login-screen" class="card">
             <h3>CBT Portal</h3>
-            <input type="text" id="username-in" placeholder="Full Name">
+            <input type="text" id="username-in" placeholder="Your Full Name">
             <button class="primary-btn" onclick="saveName()">Log In <i data-lucide="log-in" style="width:18px;"></i></button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>Setup Session</h3>
+            <h3>Select 1-4 Subjects</h3>
             <div class="sub-grid" id="sub-list-setup"></div>
-            <button class="primary-btn" onclick="syncQuestions()">Generate Mock <i data-lucide="zap" style="width:18px;"></i></button>
+            <button class="primary-btn" onclick="syncQuestions()">Generate Session <i data-lucide="zap" style="width:18px;"></i></button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
@@ -114,7 +113,7 @@
             
             <div id="q-meta" style="margin-top:15px;">
                 <span id="q-sub-title">Subject</span>
-                <span id="q-progress-text">0 / 40 Answered</span>
+                <span id="q-progress-text">Answered: 0 / 40</span>
             </div>
             <div id="question-box"></div>
             <div id="options-box"></div>
@@ -125,36 +124,33 @@
             </div>
 
             <div class="q-nav-grid" id="q-nav-grid"></div>
-            <button onclick="submitCBT()" style="background:#dc3545; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800; box-shadow: 0 4px 15px rgba(220,53,69,0.3);">Submit Final Result</button>
+            <button onclick="submitCBT()" style="background:#dc3545; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800;">Submit All</button>
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <p style="font-weight: bold; opacity: 0.6;">Your Performance</p>
-            <h1 id="final-percent" style="font-size: 60px; color: #28a745; margin: 15px 0;">0%</h1>
-            <div id="breakdown-list" style="margin-bottom: 30px; text-align: left;"></div>
-            <button class="primary-btn" onclick="location.reload()" style="background:#28a745;">Dashboard Home</button>
+            <h1 id="final-percent" style="font-size: 55px; color: #28a745; margin: 15px 0;">0%</h1>
+            <div id="breakdown-list" style="margin-bottom: 25px; text-align: left; font-size: 14px;"></div>
+            <button class="primary-btn" onclick="location.reload()" style="background:#28a745;">Dashboard</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
             <h3>Do you have a feedback</h3>
-            <p style="font-size:13px; opacity:0.7; margin-bottom:12px;">Samples (Tap to select):</p>
             <div style="margin-bottom:20px;">
                 <div class="sample-chip" onclick="fillIdea('Add more 2026 practice questions')">Add 2026 Qs</div>
-                <div class="sample-chip" onclick="fillIdea('The calculator is a bit slow')">Fix Calculator</div>
+                <div class="sample-chip" onclick="fillIdea('Calculator is a bit slow')">Fix Calc</div>
                 <div class="sample-chip" onclick="fillIdea('I love the UI design')">Review App</div>
-                <div class="sample-chip" onclick="fillIdea('Add past questions for Government')">Subject Qs</div>
             </div>
-            <textarea id="idea-msg" placeholder="Write your feedback here..."></textarea>
-            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366; box-shadow: 0 4px 12px rgba(37,211,102,0.3);"><i data-lucide="send"></i> Send WhatsApp</button>
+            <textarea id="idea-msg" placeholder="Tell the admin your idea..."></textarea>
+            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366;"><i data-lucide="send"></i> Send WhatsApp</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-        <span style="font-size:11px; opacity:0.5; font-weight:bold; color: white;">VIBE CALC</span>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <span style="font-size:10px; opacity:0.5; font-weight:bold; color: white;">VIBE CALC</span>
         <button class="calc-cancel-btn" onclick="toggleCalc()"><i data-lucide="x" style="width:16px;"></i></button>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
@@ -190,12 +186,12 @@
         document.getElementById('stat-sessions').innerText = store.sessions;
         document.getElementById('stat-best').innerText = store.best + "%";
         const hBox = document.getElementById('history-box');
-        hBox.innerHTML = store.history.length ? "" : "<p style='font-size:12px; opacity:0.4; text-align:center;'>No history recorded yet.</p>";
+        hBox.innerHTML = store.history.length ? "" : "<p style='font-size:12px; opacity:0.4; text-align:center;'>No history recorded.</p>";
         store.history.slice().reverse().forEach(h => {
             const d = document.createElement('div');
             d.className = 'history-item';
             d.innerHTML = `<span><b>${h.score}%</b> <small style='opacity:0.6; margin-left:10px;'>${h.date}</small></span><i data-lucide='chevron-right' style='width:16px; opacity:0.4;'></i>`;
-            d.onclick = () => alert(`Detail Breakdown:\n\n${h.detail}`);
+            d.onclick = () => alert(`Breakdown:\n\n${h.detail}`);
             hBox.appendChild(d);
         });
         localStorage.setItem('vibe_master_db', JSON.stringify(store));
@@ -208,7 +204,7 @@
         document.getElementById('tab-'+t).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
-        document.getElementById('header-title').innerText = t === 'home' ? 'Home' : (t === 'practice' ? 'Practice' : 'Feedback');
+        document.getElementById('header-title').innerText = t.charAt(0).toUpperCase() + t.slice(1);
     }
 
     function toggleTheme() {
@@ -237,7 +233,7 @@
     });
 
     async function syncQuestions() {
-        if(!selected.length) return alert("Select subjects!");
+        if(!selected.length) return alert("Select at least 1 subject!");
         document.getElementById('setup-screen').classList.add('hidden');
         document.getElementById('loading-screen').classList.remove('hidden');
 
@@ -246,12 +242,13 @@
 
         try {
             for(let s of selected) {
-                document.getElementById('loader-status').innerText = `Fetching ${s}...`;
+                document.getElementById('loader-status').innerText = `Syncing ${s}...`;
+                // Logic: English must have 60, others 40
+                let qLimit = (s === "English") ? 60 : 40;
                 const res = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                 const json = await res.json();
                 
-                let targetCount = (s === "English") ? 60 : 40;
-                eData[s] = json.data.slice(0, targetCount).map(q => ({
+                eData[s] = json.data.slice(0, qLimit).map(q => ({
                     q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
                     opts: [q.option.a, q.option.b, q.option.c, q.option.d],
                     ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase())
@@ -274,7 +271,7 @@
                     renderTabs(); loadQ(); startTimer();
                 }
             }, 800);
-        } catch { alert("Connection Error. Check internet."); location.reload(); }
+        } catch { alert("Connection Error. Ensure data is on."); location.reload(); }
     }
 
     function renderTabs() {
@@ -292,7 +289,7 @@
         const q = list[currIdx];
         let answeredTotal = Object.keys(uAns[active]).length;
         document.getElementById('q-sub-title').innerText = active;
-        document.getElementById('q-progress-text').innerText = `${answeredTotal} / ${list.length} Answered`;
+        document.getElementById('q-progress-text').innerText = `Answered: ${answeredTotal} / ${list.length}`;
         document.getElementById('question-box').innerHTML = q.q;
         const box = document.getElementById('options-box'); box.innerHTML = "";
         q.opts.forEach((o, i) => {
@@ -316,7 +313,7 @@
         });
     }
 
-    function nextQ() { if(currIdx < eData[active].length-1) { currentIdx++; loadQ(); } }
+    function nextQ() { if(currIdx < eData[active].length-1) { currIdx++; loadQ(); } }
     function prevQ() { if(currIdx > 0) { currentIdx--; loadQ(); } }
 
     function startTimer() {
@@ -324,13 +321,13 @@
         mainTimer = setInterval(() => {
             let m = Math.floor(t/60), s = t%60;
             document.getElementById('exam-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if(t <= 0) { clearInterval(mainTimer); submitCBT(); }
+            if(t <= 0) { clearInterval(mainTimer); submitCBT(); alert("Time Up! Automatically submitting."); }
             t--;
         }, 1000);
     }
 
     function submitCBT() {
-        clearInterval(mainTimer);
+        if(mainTimer) clearInterval(mainTimer);
         let score = 0, total = 0, log = "";
         selected.forEach(s => {
             let sScore = 0;
@@ -351,7 +348,6 @@
     function cPress(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function cClr() { document.getElementById('calc-display').value = '0'; }
     function cSolve() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value.replace('÷','/').replace('×','*')); } catch { document.getElementById('calc-display').value = "Err"; } }
-    
     function fillIdea(t) { document.getElementById('idea-msg').value = t; }
     function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
 </script>
