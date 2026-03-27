@@ -10,243 +10,257 @@
         [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 85px; overflow-x: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 90px; }
         #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
-        .card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; width: 100%; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
         .hidden { display: none !important; }
 
         /* Navigation */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; transition: 0.2s; color: var(--text); }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
-        .nav-item i { margin-bottom: 4px; }
 
-        /* Dashboard Stats */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .stat-card { background: rgba(0,123,255,0.05); padding: 15px; border-radius: 15px; text-align: center; }
-        .stat-card b { font-size: 20px; display: block; color: var(--accent); }
+        /* Progress Bar */
+        .prog-container { width: 100%; background: rgba(0,0,0,0.1); height: 24px; border-radius: 12px; margin: 20px 0; overflow: hidden; position: relative; }
+        .prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
 
-        /* Buttons & Grid */
-        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
-        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
+        /* UI Elements */
+        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; max-height: 200px; overflow-y: auto; }
+        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; }
         .subject-chip.selected { background: var(--accent); color: white; }
-
-        /* Exam UI */
-        .opt-btn { background: transparent; border: 1.5px solid #d1d9e0; color: var(--text); text-align: left; margin-bottom: 10px; width: 100%; padding: 14px; border-radius: 12px; cursor: pointer; }
-        .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.1); }
-        #timer-box { font-family: monospace; font-size: 18px; color: #d32f2f; background: rgba(211,47,47,0.1); padding: 8px 12px; border-radius: 10px; }
+        
+        /* History & Ideas */
+        .history-card { background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0,0,0,0.05); }
+        .idea-sample { display: inline-block; padding: 8px 12px; background: rgba(0,123,255,0.1); border: 1px solid var(--accent); border-radius: 20px; font-size: 12px; margin: 4px; cursor: pointer; color: var(--accent); }
 
         /* Calculator */
-        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white; }
         .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 15px; border-radius: 12px; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; margin:0; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
-
-        /* Countdown Loader */
-        #loading-count { font-size: 48px; font-weight: bold; color: var(--accent); margin: 20px 0; }
+        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
     </style>
 </head>
 <body data-theme="light">
 
 <div id="app-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 id="header-title" style="margin:0;">Dashboard</h2>
-        <div onclick="toggleTheme()" id="theme-icon" style="cursor:pointer;"><i data-lucide="moon"></i></div>
+        <h2 id="header-title" style="margin:0;">Home</h2>
+        <div onclick="toggleTheme()" id="theme-toggle" style="cursor:pointer;"><i data-lucide="moon"></i></div>
     </div>
 
-    <div id="tab-dash">
+    <div id="tab-home">
         <div class="card">
-            <h3>Welcome Back, <span id="display-name">Student</span></h3>
-            <div class="stat-grid">
-                <div class="stat-card"><span>Sessions</span><b id="stat-sessions">0</b></div>
-                <div class="stat-card"><span>Best Score</span><b id="stat-best">0%</b></div>
+            <h3>Hello, <span id="user-display">Explorer</span></h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
+                    <span style="font-size:12px; opacity:0.7;">Sessions</span><b id="stat-sessions" style="display:block; font-size:22px; color:var(--accent);">0</b>
+                </div>
+                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
+                    <span style="font-size:12px; opacity:0.7;">Top Score</span><b id="stat-best" style="display:block; font-size:22px; color:var(--accent);">0%</b>
+                </div>
             </div>
-            <p style="font-size: 13px; margin-bottom: 5px;">Recent Result:</p>
-            <div id="recent-result" style="padding:15px; border-radius:12px; border:1px dashed #ccc; font-size:14px; text-align:center;">
-                No sessions completed yet.
-            </div>
-            <button onclick="switchTab('exam', document.getElementById('nav-exam'))"><i data-lucide="play"></i> Start Practice</button>
+            <p style="font-weight:bold; font-size:14px; margin-bottom:10px;">Recent History</p>
+            <div id="history-container"></div>
         </div>
     </div>
 
-    <div id="tab-exam" class="hidden">
+    <div id="tab-practice" class="hidden">
         <div id="login-screen" class="card">
-            <h3>Student Login</h3>
-            <input type="text" id="username" placeholder="Enter Full Name" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
-            <button onclick="saveUser()">Login & Sync</button>
+            <h3>Student Portal</h3>
+            <input type="text" id="username" placeholder="Full Name" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
+            <button onclick="login()">Enter Portal</button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>CBT Setup</h3>
+            <h3>Select 1-4 Subjects</h3>
             <div class="subject-grid" id="subject-list"></div>
-            <button onclick="startExam()"><i data-lucide="zap"></i> Prepare Questions</button>
+            <button onclick="startSync()"><i data-lucide="zap"></i> Generate Exam</button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
-            <h3>Generating Exam...</h3>
-            <div id="loading-count">5</div>
-            <p style="font-size:12px; opacity:0.6;">Connecting to JAMB API</p>
+            <h3 id="load-msg">Downloading Data...</h3>
+            <div class="prog-container"><div id="prog-fill" class="prog-bar">0%</div></div>
+            <div id="sync-countdown" style="font-size: 32px; font-weight: bold; color: var(--accent);"></div>
         </div>
 
         <div id="exam-screen" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <div id="timer-box">120:00</div>
+                <div id="timer" style="color:red; font-weight:bold; font-family:monospace; font-size:18px;">120:00</div>
                 <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
             </div>
-            <div id="active-tabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px;"></div>
-            <h4 id="question-text" style="line-height:1.5; min-height:80px;"></h4>
-            <div id="options-container"></div>
+            <div id="subject-tabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px;"></div>
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top:15px;">
+                <h4 id="question-box" style="line-height:1.6; min-height:80px;"></h4>
+                <div id="options-box"></div>
+            </div>
             <div style="display: flex; gap: 10px; margin-top:20px;">
                 <button onclick="prevQ()" style="background:#6c757d">Back</button>
                 <button onclick="nextQ()">Next</button>
             </div>
-            <button onclick="finishExam()" style="background:#dc3545; margin-top:15px;">Submit Exam</button>
+            <button onclick="submitExam()" style="background:#dc3545; margin-top:15px;">Submit All</button>
         </div>
 
-        <div id="result-screen" class="card hidden">
-            <h2 style="text-align:center;">Exam Result</h2>
-            <div id="result-summary" style="text-align:center; padding:20px; font-size:18px;"></div>
-            <button onclick="location.reload()" style="background:#28a745;">Back to Dashboard</button>
+        <div id="result-screen" class="card hidden" style="text-align:center;">
+            <div id="score-circle"></div>
+            <div id="result-breakdown" style="margin: 20px 0; text-align: left;"></div>
+            <button onclick="startReview()" style="background:#6c757d; margin-bottom:10px;">Review Mistakes</button>
+            <button onclick="location.reload()" style="background:#28a745;">Back Home</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
-            <h3>Vibe Suggestions</h3>
-            <p style="font-size:14px; opacity:0.7;">Tap a quick idea:</p>
-            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
-                <span onclick="fillIdea('Add more Biology explanations')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Explanations</span>
-                <span onclick="fillIdea('Calculator is glitchy on mobile')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Fix Calc</span>
-                <span onclick="fillIdea('The timer is too fast')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Timer</span>
+            <h3>Vibe Feedback</h3>
+            <p style="font-size:13px; opacity:0.7;">Select a quick sample:</p>
+            <div style="margin-bottom:15px;">
+                <div class="idea-sample" onclick="setIdea('The Biology questions are great, add more!')">?? Compliment</div>
+                <div class="idea-sample" onclick="setIdea('I found a typo in a Physics question.')">?? Fix Typo</div>
+                <div class="idea-sample" onclick="setIdea('The calculator needs square root.')">?? Calculator</div>
+                <div class="idea-sample" onclick="setIdea('Make the dark mode even darker.')">?? Dark Mode</div>
             </div>
-            <textarea id="feedback-text" placeholder="Type your idea..." style="width:100%; height:120px; border-radius:12px; padding:10px;"></textarea>
-            <button onclick="sendFeedback()"><i data-lucide="send"></i> Send Idea</button>
+            <textarea id="idea-text" placeholder="Type your suggestion..." style="width:100%; height:120px; border-radius:12px; padding:12px; border:1.5px solid #ccc;"></textarea>
+            <button onclick="sendIdea()"><i data-lucide="send"></i> Send to Admin</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:15px;">
-        <span>JAMB CALC</span>
-        <span onclick="toggleCalc()" style="cursor:pointer;">?</span>
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+        <span style="font-size:12px; opacity:0.6;">JAMB CALC</span>
+        <div onclick="toggleCalc()" style="cursor:pointer; background:#ff3b30; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:14px;">?</div>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
-        <button onclick="clr()" style="background:#acacaf; color:black;">AC</button><button onclick="press('/')" style="background:#ff9f0a;">÷</button><button onclick="press('*')" style="background:#ff9f0a;">×</button><button onclick="press('-')" style="background:#ff9f0a;">?</button>
-        <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button onclick="press('+')" style="background:#ff9f0a;">+</button>
-        <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button onclick="calculate()" style="background:#ff9f0a;">=</button>
+        <button onclick="clr()">C</button>
+        <button onclick="press('/')" style="background:#ff9f0a;">÷</button>
+        <button onclick="press('*')" style="background:#ff9f0a;">×</button>
+        <button onclick="press('-')" style="background:#ff9f0a;">?</button>
+        <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
+        <button onclick="press('+')" style="background:#ff9f0a;">+</button>
+        <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
+        <button onclick="calculate()" style="background:#ff9f0a;">=</button>
         <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button onclick="press('0')">0</button>
     </div>
 </div>
 
 <div class="nav-bar">
-    <div class="nav-item active" onclick="switchTab('dash', this)"><i data-lucide="home"></i><br>Home</div>
-    <div id="nav-exam" class="nav-item" onclick="switchTab('exam', this)"><i data-lucide="book-open"></i><br>Practice</div>
+    <div class="nav-item active" onclick="switchTab('home', this)"><i data-lucide="home"></i><br>Home</div>
+    <div id="nav-practice" class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
     <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
 </div>
 
 <script>
-    // --- APP STATE & STORAGE ---
     const API_TOKEN = "ALOC-37270319fe62227b783f";
-    const SUBJECTS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography"];
+    const SUBS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography"];
     
-    let stats = JSON.parse(localStorage.getItem('jamb_vibe_stats')) || { sessions: 0, best: 0, last: "" };
-    let examData = {}, userAnswers = {}, selectedSubs = [], activeSub = "", currentIdx = 0;
+    let db = JSON.parse(localStorage.getItem('vibe_db')) || { sessions: 0, best: 0, history: [] };
+    let examData = {}, userAnswers = {}, selected = [], activeSub = "", currentIdx = 0;
 
-    function updateStats() {
-        document.getElementById('stat-sessions').innerText = stats.sessions;
-        document.getElementById('stat-best').innerText = stats.best + "%";
-        if(stats.last) document.getElementById('recent-result').innerHTML = `<b>Last Session:</b> ${stats.last}`;
-        localStorage.setItem('jamb_vibe_stats', JSON.stringify(stats));
+    function refreshStats() {
+        document.getElementById('stat-sessions').innerText = db.sessions;
+        document.getElementById('stat-best').innerText = db.best + "%";
+        const container = document.getElementById('history-container');
+        container.innerHTML = db.history.length ? "" : "<p style='font-size:12px; opacity:0.5'>No attempts yet.</p>";
+        db.history.slice().reverse().forEach(h => {
+            const item = document.createElement('div');
+            item.className = 'history-card';
+            item.innerHTML = `<div><b>${h.score}%</b> <small style='opacity:0.6; margin-left:10px;'>${h.date}</small></div><i data-lucide="chevron-right" style="width:16px;"></i>`;
+            item.onclick = () => alert(`Breakdown:\n${h.detail}`);
+            container.appendChild(item);
+        });
+        localStorage.setItem('vibe_db', JSON.stringify(db));
+        lucide.createIcons();
     }
-    updateStats();
-
-    // Icon Rendering
-    lucide.createIcons();
-
-    function fillIdea(t) { document.getElementById('feedback-text').value = t; }
+    refreshStats();
 
     function switchTab(tab, el) {
-        ['dash','exam','ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
+        ['home', 'practice', 'ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
         document.getElementById('tab-'+tab).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
-        document.getElementById('header-title').innerText = el.innerText.trim();
+        document.getElementById('header-title').innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
     }
 
     function toggleTheme() {
-        const b = document.body;
-        const current = b.dataset.theme;
-        b.dataset.theme = current === 'dark' ? 'light' : 'dark';
-        document.getElementById('theme-icon').innerHTML = `<i data-lucide="${b.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+        document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.getElementById('theme-toggle').innerHTML = `<i data-lucide="${document.body.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
         lucide.createIcons();
     }
 
-    // Build Subjects
-    const list = document.getElementById('subject-list');
-    SUBJECTS.forEach(s => {
+    const grid = document.getElementById('subject-list');
+    SUBS.forEach(s => {
         const d = document.createElement('div');
         d.className = 'subject-chip'; d.innerText = s;
         d.onclick = () => {
-            if(selectedSubs.includes(s)) { selectedSubs = selectedSubs.filter(x => x!==s); d.classList.remove('selected'); }
-            else if(selectedSubs.length < 4) { selectedSubs.push(s); d.classList.add('selected'); }
+            if(selected.includes(s)) { selected = selected.filter(x => x!==s); d.classList.remove('selected'); }
+            else if(selected.length < 4) { selected.push(s); d.classList.add('selected'); }
         };
-        list.appendChild(d);
+        grid.appendChild(d);
     });
 
-    function saveUser() {
-        const name = document.getElementById('username').value;
-        if(!name) return alert("Enter name");
-        document.getElementById('display-name').innerText = name.split(' ')[0];
+    function login() {
+        const n = document.getElementById('username').value;
+        if(!n) return alert("Enter name");
+        document.getElementById('user-display').innerText = n.split(' ')[0];
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('setup-screen').classList.remove('hidden');
     }
 
-    async function startExam() {
-        if(selectedSubs.length < 1) return alert("Select subjects");
+    async function startSync() {
+        if(!selected.length) return alert("Select subjects");
         document.getElementById('setup-screen').classList.add('hidden');
         document.getElementById('loading-screen').classList.remove('hidden');
 
-        // Countdown logic
-        let count = 5;
-        const cBox = document.getElementById('loading-count');
-        const cd = setInterval(() => {
-            count--;
-            cBox.innerText = count;
-            if(count <= 0) clearInterval(cd);
-        }, 800);
+        const bar = document.getElementById('prog-fill');
+        let done = 0;
 
         try {
-            for(let s of selectedSubs) {
+            for(let s of selected) {
                 const r = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': API_TOKEN } });
-                const d = await r.json();
-                examData[s] = d.data.map(q => ({ q: q.question, opts: [q.option.a, q.option.b, q.option.c, q.option.d], ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase()) }));
+                const data = await r.json();
+                examData[s] = data.data.map(q => ({ q: q.question, opts: [q.option.a, q.option.b, q.option.c, q.option.d], ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase()) }));
                 userAnswers[s] = {};
+                done++;
+                let p = Math.round((done / selected.length) * 100);
+                bar.style.width = p + "%";
+                bar.innerText = p + "%";
             }
-            activeSub = selectedSubs[0];
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('exam-screen').classList.remove('hidden');
-            renderTabs(); loadQ(); startTimer();
-        } catch { alert("Network Error"); location.reload(); }
+
+            document.getElementById('load-msg').innerText = "Syncing Data...";
+            let count = 3;
+            const cdBox = document.getElementById('sync-countdown');
+            cdBox.innerText = count;
+            const timer = setInterval(() => {
+                count--;
+                cdBox.innerText = count || "GO!";
+                if(count < 0) {
+                    clearInterval(timer);
+                    activeSub = selected[0];
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    document.getElementById('exam-screen').classList.remove('hidden');
+                    renderSubjectTabs(); loadQ(); startTimer();
+                }
+            }, 800);
+        } catch { alert("API Offline"); location.reload(); }
     }
 
-    function renderTabs() {
-        const c = document.getElementById('active-tabs'); c.innerHTML = "";
-        selectedSubs.forEach(s => {
+    function renderSubjectTabs() {
+        const c = document.getElementById('subject-tabs'); c.innerHTML = "";
+        selected.forEach(s => {
             const b = document.createElement('button');
             b.innerText = s; b.style.width="auto"; b.style.padding="6px 12px"; b.style.fontSize="11px";
             b.style.background = s === activeSub ? "#007bff" : "#555";
-            b.onclick = () => { activeSub = s; currentIdx = 0; renderTabs(); loadQ(); };
+            b.onclick = () => { activeSub = s; currentIdx = 0; renderSubjectTabs(); loadQ(); };
             c.appendChild(b);
         });
     }
 
     function loadQ() {
         const q = examData[activeSub][currentIdx];
-        document.getElementById('question-text').innerHTML = q.q;
-        const c = document.getElementById('options-container'); c.innerHTML = "";
+        document.getElementById('question-box').innerHTML = q.q;
+        const c = document.getElementById('options-box'); c.innerHTML = "";
         q.opts.forEach((o, i) => {
             const b = document.createElement('button');
             b.className = `opt-btn ${userAnswers[activeSub][currentIdx] === i ? 'selected' : ''}`;
@@ -263,34 +277,41 @@
         let t = 120 * 60;
         const i = setInterval(() => {
             let m = Math.floor(t/60), s = t%60;
-            document.getElementById('timer-box').innerText = `${m}:${s<10?'0':''}${s}`;
-            if(t <= 0) { clearInterval(i); finishExam(); }
+            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
+            if(t <= 0) { clearInterval(i); submitExam(); }
             t--;
         }, 1000);
     }
 
-    function finishExam() {
-        let score = 0, total = 0;
-        selectedSubs.forEach(s => { examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) score++; }); });
-        
-        const percent = Math.round((score/total)*100);
-        stats.sessions++;
-        if(percent > stats.best) stats.best = percent;
-        stats.last = `${selectedSubs.join('/')}: ${score}/${total} (${percent}%)`;
-        updateStats();
+    function submitExam() {
+        let score = 0, total = 0, detail = "";
+        selected.forEach(s => {
+            let sScore = 0;
+            examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) { score++; sScore++; } });
+            detail += `${s}: ${sScore}/${examData[s].length}\n`;
+        });
+        const p = Math.round((score/total)*100);
+        db.sessions++;
+        if(p > db.best) db.best = p;
+        db.history.push({ date: new Date().toLocaleDateString(), score: p, detail: detail });
+        refreshStats();
 
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('result-summary').innerHTML = `<h1 style="color:#28a745">${percent}%</h1><p>You scored ${score} out of ${total}</p>`;
+        document.getElementById('score-circle').innerHTML = `<h1 style="font-size:48px; color:#28a745; margin:0;">${p}%</h1><p>Scored ${score} / ${total}</p>`;
+        document.getElementById('result-breakdown').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:12px;">${detail}</pre>`;
     }
 
-    // Calc Engine
+    function startReview() { alert("Review Mode showing correct answers is being synced. Check Home History for scores."); }
+
+    // Calc Logic
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
     function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function clr() { document.getElementById('calc-display').value = '0'; }
-    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Error"; } }
-
-    function sendFeedback() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('feedback-text').value)}`); }
+    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Err"; } }
+    
+    function setIdea(t) { document.getElementById('idea-text').value = text; }
+    function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-text').value)}`); }
 </script>
 </body>
 </html>
