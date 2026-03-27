@@ -21,25 +21,29 @@
         .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
-        /* Progress Bar */
-        .prog-container { width: 100%; background: rgba(0,0,0,0.1); height: 24px; border-radius: 12px; margin: 20px 0; overflow: hidden; position: relative; }
-        .prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
+        /* Progress UI */
+        .prog-container { width: 100%; background: rgba(0,0,0,0.1); height: 24px; border-radius: 12px; margin: 15px 0; overflow: hidden; position: relative; }
+        .prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold; }
 
         /* UI Elements */
         button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; max-height: 200px; overflow-y: auto; }
-        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; }
+        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; background: transparent; color: var(--text); }
         .subject-chip.selected { background: var(--accent); color: white; }
         
-        /* History & Ideas */
-        .history-card { background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0,0,0,0.05); }
-        .idea-sample { display: inline-block; padding: 8px 12px; background: rgba(0,123,255,0.1); border: 1px solid var(--accent); border-radius: 20px; font-size: 12px; margin: 4px; cursor: pointer; color: var(--accent); }
+        /* Idea Chips */
+        .idea-sample { display: inline-block; padding: 10px 14px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 25px; font-size: 13px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 500; }
+
+        /* Question UI */
+        #question-box { background: rgba(0,123,255,0.03); padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); margin-bottom: 20px; line-height: 1.6; }
+        .opt-btn { background: var(--card); border: 1.5px solid #d1d9e0; color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 12px; cursor: pointer; font-size: 15px; transition: 0.2s; }
+        .opt-btn.selected { border-color: var(--accent); background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
 
         /* Calculator */
         #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white; }
         .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 15px; border-radius: 12px; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
+        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; color: white; }
     </style>
 </head>
 <body data-theme="light">
@@ -52,7 +56,7 @@
 
     <div id="tab-home">
         <div class="card">
-            <h3>Hello, <span id="user-display">Explorer</span></h3>
+            <h3>Hi, <span id="user-display">Explorer</span></h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
                 <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
                     <span style="font-size:12px; opacity:0.7;">Sessions</span><b id="stat-sessions" style="display:block; font-size:22px; color:var(--accent);">0</b>
@@ -74,7 +78,7 @@
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>Select 1-4 Subjects</h3>
+            <h3>Setup Exam</h3>
             <div class="subject-grid" id="subject-list"></div>
             <button onclick="startSync()"><i data-lucide="zap"></i> Generate Exam</button>
         </div>
@@ -91,10 +95,14 @@
                 <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
             </div>
             <div id="subject-tabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px;"></div>
-            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top:15px;">
-                <h4 id="question-box" style="line-height:1.6; min-height:80px;"></h4>
-                <div id="options-box"></div>
+            
+            <div id="progress-info" style="font-size: 12px; font-weight: bold; margin-bottom: 10px; color: var(--accent);">
+                Answered: 0 / 0
             </div>
+
+            <div id="question-box"></div>
+            <div id="options-box"></div>
+
             <div style="display: flex; gap: 10px; margin-top:20px;">
                 <button onclick="prevQ()" style="background:#6c757d">Back</button>
                 <button onclick="nextQ()">Next</button>
@@ -103,22 +111,20 @@
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <div id="score-circle"></div>
-            <div id="result-breakdown" style="margin: 20px 0; text-align: left;"></div>
-            <button onclick="startReview()" style="background:#6c757d; margin-bottom:10px;">Review Mistakes</button>
-            <button onclick="location.reload()" style="background:#28a745;">Back Home</button>
+            <div id="score-display"></div>
+            <button onclick="location.reload()" style="background:#28a745; margin-top: 20px;">Back Home</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
             <h3>Vibe Feedback</h3>
-            <p style="font-size:13px; opacity:0.7;">Select a quick sample:</p>
+            <p style="font-size:13px; opacity:0.7; margin-bottom: 10px;">Click a sample to use it:</p>
             <div style="margin-bottom:15px;">
-                <div class="idea-sample" onclick="setIdea('The Biology questions are great, add more!')">?? Compliment</div>
-                <div class="idea-sample" onclick="setIdea('I found a typo in a Physics question.')">?? Fix Typo</div>
-                <div class="idea-sample" onclick="setIdea('The calculator needs square root.')">?? Calculator</div>
-                <div class="idea-sample" onclick="setIdea('Make the dark mode even darker.')">?? Dark Mode</div>
+                <div class="idea-sample" onclick="setIdea('Add more Biology explanations!')">Compliment</div>
+                <div class="idea-sample" onclick="setIdea('I found a typo in a Physics question.')">Fix Typo</div>
+                <div class="idea-sample" onclick="setIdea('Add scientific calculator.')">Calculator</div>
+                <div class="idea-sample" onclick="setIdea('Make dark mode darker.')">Dark Mode</div>
             </div>
             <textarea id="idea-text" placeholder="Type your suggestion..." style="width:100%; height:120px; border-radius:12px; padding:12px; border:1.5px solid #ccc;"></textarea>
             <button onclick="sendIdea()"><i data-lucide="send"></i> Send to Admin</button>
@@ -129,7 +135,7 @@
 <div id="calc-modal" class="hidden">
     <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
         <span style="font-size:12px; opacity:0.6;">JAMB CALC</span>
-        <div onclick="toggleCalc()" style="cursor:pointer; background:#ff3b30; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:14px;">?</div>
+        <div onclick="toggleCalc()" style="cursor:pointer; background:#ff3b30; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center;">?</div>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
@@ -166,14 +172,17 @@
         db.history.slice().reverse().forEach(h => {
             const item = document.createElement('div');
             item.className = 'history-card';
+            item.style.cssText = "background:var(--card); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; border:1px solid rgba(0,0,0,0.05);";
             item.innerHTML = `<div><b>${h.score}%</b> <small style='opacity:0.6; margin-left:10px;'>${h.date}</small></div><i data-lucide="chevron-right" style="width:16px;"></i>`;
-            item.onclick = () => alert(`Breakdown:\n${h.detail}`);
+            item.onclick = () => alert(`Session Detail:\n${h.detail}`);
             container.appendChild(item);
         });
         localStorage.setItem('vibe_db', JSON.stringify(db));
         lucide.createIcons();
     }
     refreshStats();
+
+    function setIdea(txt) { document.getElementById('idea-text').value = txt; }
 
     function switchTab(tab, el) {
         ['home', 'practice', 'ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
@@ -258,7 +267,13 @@
     }
 
     function loadQ() {
-        const q = examData[activeSub][currentIdx];
+        const qList = examData[activeSub];
+        const q = qList[currentIdx];
+        
+        // Update Progress Tracker
+        let answered = Object.keys(userAnswers[activeSub]).length;
+        document.getElementById('progress-info').innerText = `${activeSub} Progress: ${answered} / ${qList.length} answered`;
+
         document.getElementById('question-box').innerHTML = q.q;
         const c = document.getElementById('options-box'); c.innerHTML = "";
         q.opts.forEach((o, i) => {
@@ -277,7 +292,7 @@
         let t = 120 * 60;
         const i = setInterval(() => {
             let m = Math.floor(t/60), s = t%60;
-            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
             if(t <= 0) { clearInterval(i); submitExam(); }
             t--;
         }, 1000);
@@ -298,19 +313,13 @@
 
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('score-circle').innerHTML = `<h1 style="font-size:48px; color:#28a745; margin:0;">${p}%</h1><p>Scored ${score} / ${total}</p>`;
-        document.getElementById('result-breakdown').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:12px;">${detail}</pre>`;
+        document.getElementById('score-display').innerHTML = `<h1 style="font-size:48px; color:#28a745; margin:0;">${p}%</h1><p>Scored ${score} / ${total}</p><pre style="text-align:left; background:rgba(0,0,0,0.05); padding:15px; border-radius:10px;">${detail}</pre>`;
     }
 
-    function startReview() { alert("Review Mode showing correct answers is being synced. Check Home History for scores."); }
-
-    // Calc Logic
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
     function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function clr() { document.getElementById('calc-display').value = '0'; }
     function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Err"; } }
-    
-    function setIdea(t) { document.getElementById('idea-text').value = text; }
     function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-text').value)}`); }
 </script>
 </body>
