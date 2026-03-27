@@ -3,324 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAMB Vibe Master</title>
+    <title>JAMB Vibe Master Pro</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; }
-        [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; }
+        :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; --border: #d1d9e0; }
+        [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; --border: #30363d; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 90px; }
         #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
-        .card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .card { background: var(--card); padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
         .hidden { display: none !important; }
 
         /* Navigation */
-        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; color: var(--text); }
+        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
-        /* Progress UI */
-        .prog-container { width: 100%; background: rgba(0,0,0,0.1); height: 24px; border-radius: 12px; margin: 15px 0; overflow: hidden; position: relative; }
-        .prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold; }
+        /* Progress Loader */
+        .prog-outer { width: 100%; background: rgba(0,0,0,0.1); height: 26px; border-radius: 13px; margin: 20px 0; overflow: hidden; }
+        .prog-inner { width: 0%; height: 100%; background: var(--accent); transition: 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
 
-        /* UI Elements */
-        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; max-height: 200px; overflow-y: auto; }
-        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; background: transparent; color: var(--text); }
-        .subject-chip.selected { background: var(--accent); color: white; }
-        
-        /* Idea Chips */
-        .idea-sample { display: inline-block; padding: 10px 14px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 25px; font-size: 13px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 500; }
+        /* Subject Selection */
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .sub-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 14px; text-align: center; cursor: pointer; font-size: 13px; }
+        .sub-chip.selected { background: var(--accent); color: white; }
+
+        /* Question Grid (Answer Tracker) */
+        .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-top: 15px; max-height: 120px; overflow-y: auto; padding: 5px; background: rgba(0,0,0,0.03); border-radius: 12px; }
+        .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
+        .q-num.answered { background: var(--accent); color: white; border-color: var(--accent); }
+        .q-num.current { border: 2px solid var(--accent); font-weight: bold; }
 
         /* Question UI */
-        #question-box { background: rgba(0,123,255,0.03); padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); margin-bottom: 20px; line-height: 1.6; }
-        .opt-btn { background: var(--card); border: 1.5px solid #d1d9e0; color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 12px; cursor: pointer; font-size: 15px; transition: 0.2s; }
-        .opt-btn.selected { border-color: var(--accent); background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(0,123,255,0.3); }
+        #q-meta { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        #question-box { background: rgba(0,123,255,0.03); padding: 20px; border-radius: 18px; border-left: 5px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
+        .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+        .opt-btn.selected { background: var(--accent) !important; color: white !important; border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,123,255,0.3); }
 
-        /* Calculator */
-        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white; }
-        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 15px; border-radius: 12px; }
+        /* Calculator Fixes */
+        #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 28px; z-index: 2000; box-shadow: 0 25px 50px rgba(0,0,0,0.5); color: white; }
+        .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 28px; margin-bottom: 15px; border-radius: 15px; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; color: white; }
+        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; color: white; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .calc-btns button.op { background: #ff9f0a; font-weight: bold; }
+        .calc-close-btn { background: #ff3b30; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: white; }
     </style>
 </head>
 <body data-theme="light">
 
 <div id="app-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 id="header-title" style="margin:0;">Home</h2>
-        <div onclick="toggleTheme()" id="theme-toggle" style="cursor:pointer;"><i data-lucide="moon"></i></div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 id="header-title" style="margin:0; font-weight: 800;">Home</h2>
+        <div onclick="toggleTheme()" style="cursor:pointer;"><i data-lucide="moon" id="theme-icon"></i></div>
     </div>
 
     <div id="tab-home">
         <div class="card">
-            <h3>Hi, <span id="user-display">Explorer</span></h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
-                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
-                    <span style="font-size:12px; opacity:0.7;">Sessions</span><b id="stat-sessions" style="display:block; font-size:22px; color:var(--accent);">0</b>
+            <h3>HELLO, <span id="user-display-name" style="color: var(--accent);">STUDENT</span></h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin: 20px 0;">
+                <div style="background:rgba(0,123,255,0.06); padding:15px; border-radius:18px; text-align:center;">
+                    <span style="font-size:11px; opacity:0.6; display:block;">SESSIONS</span>
+                    <b id="stat-sessions" style="font-size:24px; color:var(--accent);">0</b>
                 </div>
-                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
-                    <span style="font-size:12px; opacity:0.7;">Top Score</span><b id="stat-best" style="display:block; font-size:22px; color:var(--accent);">0%</b>
+                <div style="background:rgba(0,123,255,0.06); padding:15px; border-radius:18px; text-align:center;">
+                    <span style="font-size:11px; opacity:0.6; display:block;">HIGHEST %</span>
+                    <b id="stat-best" style="font-size:24px; color:var(--accent);">0%</b>
                 </div>
             </div>
-            <p style="font-weight:bold; font-size:14px; margin-bottom:10px;">Recent History</p>
-            <div id="history-container"></div>
+            <p style="font-weight:700; font-size:14px; margin-bottom:12px;">Recent Activity</p>
+            <div id="history-box"></div>
         </div>
     </div>
 
     <div id="tab-practice" class="hidden">
         <div id="login-screen" class="card">
-            <h3>Student Portal</h3>
-            <input type="text" id="username" placeholder="Full Name" style="width:100%; padding:14px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
-            <button onclick="login()">Enter Portal</button>
+            <h3>Vibe Login</h3>
+            <input type="text" id="username-in" placeholder="Full Name" style="width:100%; padding:15px; border-radius:14px; border:1px solid var(--border); margin-bottom:15px;">
+            <button onclick="saveName()" style="width:100%; background:var(--accent); color:white; border:none; padding:15px; border-radius:14px; font-weight:bold;">Enter Portal</button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>Setup Exam</h3>
-            <div class="subject-grid" id="subject-list"></div>
-            <button onclick="startSync()"><i data-lucide="zap"></i> Generate Exam</button>
+            <h3>Setup CBT</h3>
+            <div class="sub-grid" id="sub-list-setup"></div>
+            <button onclick="syncQuestions()" style="width:100%; background:var(--accent); color:white; border:none; padding:15px; border-radius:14px; font-weight:bold;">Generate 40/60 Qs <i data-lucide="zap"></i></button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
-            <h3 id="load-msg">Downloading Data...</h3>
-            <div class="prog-container"><div id="prog-fill" class="prog-bar">0%</div></div>
-            <div id="sync-countdown" style="font-size: 32px; font-weight: bold; color: var(--accent);"></div>
+            <h3 id="loader-status">Fetching Data...</h3>
+            <div class="prog-outer"><div id="prog-bar" class="prog-inner">0%</div></div>
+            <div id="countdown-sync" style="font-size: 40px; font-weight: 900; color: var(--accent);"></div>
         </div>
 
         <div id="exam-screen" class="card hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-                <div id="timer" style="color:red; font-weight:bold; font-family:monospace; font-size:18px;">120:00</div>
+                <div id="exam-timer" style="color:red; font-weight:900; font-family:monospace; font-size:20px;">120:00</div>
                 <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
             </div>
-            <div id="subject-tabs" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px;"></div>
+            <div id="sub-tabs-bar" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:12px;"></div>
             
-            <div id="progress-info" style="font-size: 12px; font-weight: bold; margin-bottom: 10px; color: var(--accent);">
-                Answered: 0 / 0
+            <div id="q-meta">
+                <span id="q-sub-title">Biology</span>
+                <span id="q-progress-text" style="opacity:0.6;">Answered: 0 / 40</span>
             </div>
-
             <div id="question-box"></div>
             <div id="options-box"></div>
 
             <div style="display: flex; gap: 10px; margin-top:20px;">
-                <button onclick="prevQ()" style="background:#6c757d">Back</button>
-                <button onclick="nextQ()">Next</button>
+                <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:12px; border-radius:12px;">Back</button>
+                <button onclick="nextQ()" style="background:var(--accent); color:white; border:none; flex:1; padding:12px; border-radius:12px;">Next</button>
             </div>
-            <button onclick="submitExam()" style="background:#dc3545; margin-top:15px;">Submit All</button>
+
+            <div class="q-nav-grid" id="q-nav-grid"></div>
+
+            <button onclick="submitCBT()" style="background:#dc3545; color:white; border:none; width:100%; padding:15px; border-radius:14px; margin-top:20px; font-weight:bold;">Submit All Subjects</button>
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <div id="score-display"></div>
-            <button onclick="location.reload()" style="background:#28a745; margin-top: 20px;">Back Home</button>
+            <h1 id="final-percent" style="font-size: 50px; color: #28a745; margin: 10px 0;">0%</h1>
+            <div id="breakdown-list" style="margin-bottom: 20px; text-align: left;"></div>
+            <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:15px; border-radius:14px; width:100%;">Return to Home</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
-            <h3>Vibe Feedback</h3>
-            <p style="font-size:13px; opacity:0.7; margin-bottom: 10px;">Click a sample to use it:</p>
+            <h3>Vibe Ideas</h3>
             <div style="margin-bottom:15px;">
-                <div class="idea-sample" onclick="setIdea('Add more Biology explanations!')">Compliment</div>
-                <div class="idea-sample" onclick="setIdea('I found a typo in a Physics question.')">Fix Typo</div>
-                <div class="idea-sample" onclick="setIdea('Add scientific calculator.')">Calculator</div>
-                <div class="idea-sample" onclick="setIdea('Make dark mode darker.')">Dark Mode</div>
+                <div class="sub-chip" style="display:inline-block; margin:4px; font-size:11px;" onclick="fillIdea('Add more 2024 Past Questions')">?? More Qs</div>
+                <div class="sub-chip" style="display:inline-block; margin:4px; font-size:11px;" onclick="fillIdea('Calculator is a bit slow')">? Fix Calc</div>
+                <div class="sub-chip" style="display:inline-block; margin:4px; font-size:11px;" onclick="fillIdea('I love the UI!')">?? Love it</div>
             </div>
-            <textarea id="idea-text" placeholder="Type your suggestion..." style="width:100%; height:120px; border-radius:12px; padding:12px; border:1.5px solid #ccc;"></textarea>
-            <button onclick="sendIdea()"><i data-lucide="send"></i> Send to Admin</button>
+            <textarea id="idea-msg" placeholder="Tell the admin your idea..." style="width:100%; height:120px; border-radius:15px; padding:15px; border:1px solid var(--border);"></textarea>
+            <button onclick="sendIdea()" style="width:100%; background:#25D366; color:white; border:none; padding:15px; border-radius:14px; margin-top:10px;">Send via WhatsApp</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
-        <span style="font-size:12px; opacity:0.6;">JAMB CALC</span>
-        <div onclick="toggleCalc()" style="cursor:pointer; background:#ff3b30; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center;">?</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <span style="font-size:10px; opacity:0.5; font-weight:bold;">VIBE CBT CALC</span>
+        <div class="calc-close-btn" onclick="toggleCalc()"><i data-lucide="x" style="width:16px;"></i></div>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
-        <button onclick="clr()">C</button>
-        <button onclick="press('/')" style="background:#ff9f0a;">÷</button>
-        <button onclick="press('*')" style="background:#ff9f0a;">×</button>
-        <button onclick="press('-')" style="background:#ff9f0a;">?</button>
-        <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
-        <button onclick="press('+')" style="background:#ff9f0a;">+</button>
-        <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
-        <button onclick="calculate()" style="background:#ff9f0a;">=</button>
-        <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button onclick="press('0')">0</button>
+        <button onclick="cClr()">C</button>
+        <button onclick="cPress('/')" class="op">÷</button>
+        <button onclick="cPress('*')" class="op">×</button>
+        <button onclick="cPress('-')" class="op">?</button>
+        <button onclick="cPress('7')">7</button><button onclick="cPress('8')">8</button><button onclick="cPress('9')">9</button>
+        <button onclick="cPress('+')" class="op">+</button>
+        <button onclick="cPress('4')">4</button><button onclick="cPress('5')">5</button><button onclick="cPress('6')">6</button>
+        <button onclick="cSolve()" class="op">=</button>
+        <button onclick="cPress('1')">1</button><button onclick="press('2')">2</button><button onclick="cPress('3')">3</button><button onclick="cPress('0')">0</button>
     </div>
 </div>
 
 <div class="nav-bar">
     <div class="nav-item active" onclick="switchTab('home', this)"><i data-lucide="home"></i><br>Home</div>
-    <div id="nav-practice" class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
+    <div id="nav-pract" class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
     <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
 </div>
 
 <script>
-    const API_TOKEN = "ALOC-37270319fe62227b783f";
-    const SUBS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography"];
+    const KEY = "ALOC-37270319fe62227b783f";
+    const SUBS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography", "History", "Agricultural Science"];
     
-    let db = JSON.parse(localStorage.getItem('vibe_db')) || { sessions: 0, best: 0, history: [] };
-    let examData = {}, userAnswers = {}, selected = [], activeSub = "", currentIdx = 0;
+    let store = JSON.parse(localStorage.getItem('vibe_master_db')) || { name: "", sessions: 0, best: 0, history: [] };
+    let eData = {}, uAns = {}, selected = [], active = "", currIdx = 0;
 
-    function refreshStats() {
-        document.getElementById('stat-sessions').innerText = db.sessions;
-        document.getElementById('stat-best').innerText = db.best + "%";
-        const container = document.getElementById('history-container');
-        container.innerHTML = db.history.length ? "" : "<p style='font-size:12px; opacity:0.5'>No attempts yet.</p>";
-        db.history.slice().reverse().forEach(h => {
-            const item = document.createElement('div');
-            item.className = 'history-card';
-            item.style.cssText = "background:var(--card); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; border:1px solid rgba(0,0,0,0.05);";
-            item.innerHTML = `<div><b>${h.score}%</b> <small style='opacity:0.6; margin-left:10px;'>${h.date}</small></div><i data-lucide="chevron-right" style="width:16px;"></i>`;
-            item.onclick = () => alert(`Session Detail:\n${h.detail}`);
-            container.appendChild(item);
+    function refresh() {
+        document.getElementById('user-display-name').innerText = (store.name || "Student").toUpperCase();
+        document.getElementById('stat-sessions').innerText = store.sessions;
+        document.getElementById('stat-best').innerText = store.best + "%";
+        const hBox = document.getElementById('history-box');
+        hBox.innerHTML = store.history.length ? "" : "<p style='font-size:12px; opacity:0.4; text-align:center;'>No history yet.</p>";
+        store.history.slice().reverse().forEach(h => {
+            const d = document.createElement('div');
+            d.style.cssText = "background:var(--card); padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; border:1px solid var(--border);";
+            d.innerHTML = `<span><b>${h.score}%</b> <small style='opacity:0.5'>${h.date}</small></span><i data-lucide='chevron-right' style='width:14px;'></i>`;
+            d.onclick = () => alert(h.detail);
+            hBox.appendChild(d);
         });
-        localStorage.setItem('vibe_db', JSON.stringify(db));
+        localStorage.setItem('vibe_master_db', JSON.stringify(store));
         lucide.createIcons();
     }
-    refreshStats();
+    refresh();
 
-    function setIdea(txt) { document.getElementById('idea-text').value = txt; }
-
-    function switchTab(tab, el) {
-        ['home', 'practice', 'ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
-        document.getElementById('tab-'+tab).classList.remove('hidden');
+    function switchTab(t, el) {
+        ['home', 'practice', 'ideas'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
+        document.getElementById('tab-'+t).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
-        document.getElementById('header-title').innerText = tab.charAt(0).toUpperCase() + tab.slice(1);
+        document.getElementById('header-title').innerText = t.charAt(0).toUpperCase() + t.slice(1);
     }
 
     function toggleTheme() {
         document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-        document.getElementById('theme-toggle').innerHTML = `<i data-lucide="${document.body.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+        document.getElementById('theme-icon').setAttribute('data-lucide', document.body.dataset.theme === 'dark' ? 'sun' : 'moon');
         lucide.createIcons();
     }
 
-    const grid = document.getElementById('subject-list');
-    SUBS.forEach(s => {
-        const d = document.createElement('div');
-        d.className = 'subject-chip'; d.innerText = s;
-        d.onclick = () => {
-            if(selected.includes(s)) { selected = selected.filter(x => x!==s); d.classList.remove('selected'); }
-            else if(selected.length < 4) { selected.push(s); d.classList.add('selected'); }
-        };
-        grid.appendChild(d);
-    });
-
-    function login() {
-        const n = document.getElementById('username').value;
-        if(!n) return alert("Enter name");
-        document.getElementById('user-display').innerText = n.split(' ')[0];
+    function saveName() {
+        const n = document.getElementById('username-in').value.trim();
+        if(!n) return alert("Enter name!");
+        store.name = n; refresh();
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('setup-screen').classList.remove('hidden');
     }
 
-    async function startSync() {
-        if(!selected.length) return alert("Select subjects");
+    const gridSetup = document.getElementById('sub-list-setup');
+    SUBS.forEach(s => {
+        const c = document.createElement('div');
+        c.className = 'sub-chip'; c.innerText = s;
+        c.onclick = () => {
+            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.classList.remove('selected'); }
+            else if(selected.length < 4) { selected.push(s); c.classList.add('selected'); }
+        };
+        gridSetup.appendChild(c);
+    });
+
+    async function syncQuestions() {
+        if(!selected.length) return alert("Select subjects!");
         document.getElementById('setup-screen').classList.add('hidden');
         document.getElementById('loading-screen').classList.remove('hidden');
 
-        const bar = document.getElementById('prog-fill');
+        const bar = document.getElementById('prog-bar');
         let done = 0;
 
         try {
             for(let s of selected) {
-                const r = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': API_TOKEN } });
-                const data = await r.json();
-                examData[s] = data.data.map(q => ({ q: q.question, opts: [q.option.a, q.option.b, q.option.c, q.option.d], ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase()) }));
-                userAnswers[s] = {};
+                document.getElementById('loader-status').innerText = `Fetching ${s}...`;
+                // Use the API normally, then we handle the slice
+                const res = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
+                const json = await res.json();
+                
+                // FORCE COUNTS: 60 for English, 40 for others
+                let targetCount = (s === "English") ? 60 : 40;
+                eData[s] = json.data.slice(0, targetCount).map(q => ({
+                    q: q.question.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"'),
+                    opts: [q.option.a, q.option.b, q.option.c, q.option.d],
+                    ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase())
+                }));
+                uAns[s] = {};
                 done++;
                 let p = Math.round((done / selected.length) * 100);
-                bar.style.width = p + "%";
-                bar.innerText = p + "%";
+                bar.style.width = p + "%"; bar.innerText = p + "%";
             }
 
-            document.getElementById('load-msg').innerText = "Syncing Data...";
-            let count = 3;
-            const cdBox = document.getElementById('sync-countdown');
-            cdBox.innerText = count;
+            document.getElementById('loader-status').innerText = "Syncing Final Data...";
+            let t = 3; const cd = document.getElementById('countdown-sync'); cd.innerText = t;
             const timer = setInterval(() => {
-                count--;
-                cdBox.innerText = count || "GO!";
-                if(count < 0) {
+                t--; cd.innerText = t || "START!";
+                if(t < 0) {
                     clearInterval(timer);
-                    activeSub = selected[0];
+                    active = selected[0];
                     document.getElementById('loading-screen').classList.add('hidden');
                     document.getElementById('exam-screen').classList.remove('hidden');
-                    renderSubjectTabs(); loadQ(); startTimer();
+                    renderTabs(); loadQ(); startTimer();
                 }
             }, 800);
-        } catch { alert("API Offline"); location.reload(); }
+        } catch { alert("API Offline or Network Busy."); location.reload(); }
     }
 
-    function renderSubjectTabs() {
-        const c = document.getElementById('subject-tabs'); c.innerHTML = "";
+    function renderTabs() {
+        const c = document.getElementById('sub-tabs-bar'); c.innerHTML = "";
         selected.forEach(s => {
             const b = document.createElement('button');
-            b.innerText = s; b.style.width="auto"; b.style.padding="6px 12px"; b.style.fontSize="11px";
-            b.style.background = s === activeSub ? "#007bff" : "#555";
-            b.onclick = () => { activeSub = s; currentIdx = 0; renderSubjectTabs(); loadQ(); };
+            b.innerText = s; b.style.cssText = `width:auto; padding:8px 15px; font-size:11px; border:none; border-radius:10px; background:${s===active?"#007bff":"#555"}; color:white;`;
+            b.onclick = () => { active = s; currIdx = 0; renderTabs(); loadQ(); };
             c.appendChild(b);
         });
     }
 
     function loadQ() {
-        const qList = examData[activeSub];
-        const q = qList[currentIdx];
-        
-        // Update Progress Tracker
-        let answered = Object.keys(userAnswers[activeSub]).length;
-        document.getElementById('progress-info').innerText = `${activeSub} Progress: ${answered} / ${qList.length} answered`;
-
+        const list = eData[active];
+        const q = list[currIdx];
+        let ansCount = Object.keys(uAns[active]).length;
+        document.getElementById('q-sub-title').innerText = active;
+        document.getElementById('q-progress-text').innerText = `Answered: ${ansCount} / ${list.length}`;
         document.getElementById('question-box').innerHTML = q.q;
-        const c = document.getElementById('options-box'); c.innerHTML = "";
+        const box = document.getElementById('options-box'); box.innerHTML = "";
         q.opts.forEach((o, i) => {
             const b = document.createElement('button');
-            b.className = `opt-btn ${userAnswers[activeSub][currentIdx] === i ? 'selected' : ''}`;
-            b.innerHTML = `${String.fromCharCode(65+i)}. ${o}`;
-            b.onclick = () => { userAnswers[activeSub][currentIdx] = i; loadQ(); };
-            c.appendChild(b);
+            b.className = `opt-btn ${uAns[active][currIdx] === i ? 'selected' : ''}`;
+            b.innerHTML = `<b>${String.fromCharCode(65+i)}.</b> ${o}`;
+            b.onclick = () => { uAns[active][currIdx] = i; loadQ(); renderNav(); };
+            box.appendChild(b);
+        });
+        renderNav();
+    }
+
+    function renderNav() {
+        const grid = document.getElementById('q-nav-grid'); grid.innerHTML = "";
+        eData[active].forEach((_, i) => {
+            const n = document.createElement('div');
+            n.className = `q-num ${uAns[active][i] !== undefined ? 'answered' : ''} ${i === currIdx ? 'current' : ''}`;
+            n.innerText = i + 1;
+            n.onclick = () => { currIdx = i; loadQ(); };
+            grid.appendChild(n);
         });
     }
 
-    function nextQ() { if(currentIdx < examData[activeSub].length-1) { currentIdx++; loadQ(); } }
-    function prevQ() { if(currentIdx > 0) { currentIdx--; loadQ(); } }
+    function nextQ() { if(currIdx < eData[active].length-1) { currIdx++; loadQ(); } }
+    function prevQ() { if(currIdx > 0) { currIdx--; loadQ(); } }
 
     function startTimer() {
         let t = 120 * 60;
         const i = setInterval(() => {
             let m = Math.floor(t/60), s = t%60;
-            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if(t <= 0) { clearInterval(i); submitExam(); }
+            document.getElementById('exam-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(t <= 0) { clearInterval(i); submitCBT(); }
             t--;
         }, 1000);
     }
 
-    function submitExam() {
-        let score = 0, total = 0, detail = "";
+    function submitCBT() {
+        let score = 0, total = 0, log = "";
         selected.forEach(s => {
             let sScore = 0;
-            examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) { score++; sScore++; } });
-            detail += `${s}: ${sScore}/${examData[s].length}\n`;
+            eData[s].forEach((q, i) => { total++; if(uAns[s][i] === q.ans) { score++; sScore++; } });
+            log += `${s}: ${sScore}/${eData[s].length}\n`;
         });
         const p = Math.round((score/total)*100);
-        db.sessions++;
-        if(p > db.best) db.best = p;
-        db.history.push({ date: new Date().toLocaleDateString(), score: p, detail: detail });
-        refreshStats();
-
+        store.sessions++; if(p > store.best) store.best = p;
+        store.history.push({ date: new Date().toLocaleDateString(), score: p, detail: log });
+        refresh();
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('score-display').innerHTML = `<h1 style="font-size:48px; color:#28a745; margin:0;">${p}%</h1><p>Scored ${score} / ${total}</p><pre style="text-align:left; background:rgba(0,0,0,0.05); padding:15px; border-radius:10px;">${detail}</pre>`;
+        document.getElementById('final-percent').innerText = p + "%";
+        document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:12px;">${log}</pre>`;
     }
 
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
-    function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
-    function clr() { document.getElementById('calc-display').value = '0'; }
-    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Err"; } }
-    function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-text').value)}`); }
+    function cPress(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
+    function cClr() { document.getElementById('calc-display').value = '0'; }
+    function cSolve() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value.replace('÷','/').replace('×','*')); } catch { document.getElementById('calc-display').value = "Err"; } }
+    function fillIdea(t) { document.getElementById('idea-msg').value = t; }
+    function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
 </script>
 </body>
 </html>
