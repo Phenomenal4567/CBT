@@ -13,26 +13,28 @@
         body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 95px; overflow-x: hidden; }
         #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
+        /* UI Components */
         .card { background: var(--card); padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
         .hidden { display: none !important; }
 
-        /* Navigation Bar */
+        /* Navigation */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
         .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); transition: 0.2s; }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
         /* Buttons & Inputs */
-        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
+        .primary-btn:active { transform: scale(0.97); }
         input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
 
-        /* Progress UI */
+        /* Loader */
         .prog-outer { width: 100%; background: rgba(0,0,0,0.1); height: 26px; border-radius: 13px; margin: 20px 0; overflow: hidden; }
         .prog-inner { width: 0%; height: 100%; background: var(--accent); transition: 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold; }
 
         /* Subject Grid */
         .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 250px; overflow-y: auto; padding: 5px; }
         .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
-        .sub-chip.selected { background: var(--accent); color: white; }
+        .sub-chip.selected { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(0,123,255,0.3); }
 
         /* Navigation Jump Grid */
         .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 140px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; border: 1px solid var(--border); }
@@ -42,22 +44,18 @@
         .q-num.rev-correct { background: var(--correct); color: white; border-color: var(--correct); }
         .q-num.rev-wrong { background: var(--wrong); color: white; border-color: var(--wrong); }
 
-        /* Exam Layout */
+        /* Exam Content */
         #question-box { background: rgba(0,123,255,0.04); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
         .opt-btn { background: var(--card); border: 2px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 18px; border-radius: 16px; cursor: pointer; transition: 0.15s; font-size: 15px; }
         .opt-btn.selected { background: var(--accent) !important; color: white !important; border-color: var(--accent); }
         .opt-btn.is-correct { background: var(--correct) !important; border-color: var(--correct) !important; color: white !important; }
         .opt-btn.is-wrong { background: var(--wrong) !important; border-color: var(--wrong) !important; color: white !important; }
 
-        /* History Cards */
-        .history-item { background: var(--card); padding: 16px; border-radius: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); cursor: pointer; }
-
-        /* Modal Overlay */
+        /* Custom Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { width: 100%; max-width: 350px; background: var(--card); border-radius: 28px; padding: 25px; color: var(--text); border: 1px solid var(--border); text-align: center; }
 
-        /* Calculator */
-        #calc-modal-inner { width: 290px; background: #1c1c1e; padding: 22px; border-radius: 30px; color: white; }
+        /* Calculator Inner */
         .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 28px; margin-bottom: 18px; border-radius: 12px; font-family: monospace; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; color: white; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -102,7 +100,7 @@
         <div id="setup-screen" class="card hidden">
             <h3>Select Subjects</h3>
             <div class="sub-grid" id="sub-list-setup"></div>
-            <button class="primary-btn" onclick="syncQuestions()">Generate Mock (40 Qs Each) <i data-lucide="zap"></i></button>
+            <button class="primary-btn" onclick="syncQuestions()">GENERATE SESSION <i data-lucide="zap"></i></button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
@@ -136,11 +134,11 @@
         </div>
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
-            <p>Mock Result Summary</p>
+            <p>Aggregate Score</p>
             <h1 id="final-percent" style="font-size: 55px; color: #28a745; margin: 10px 0;">0 / 400</h1>
-            <div id="breakdown-list" style="margin-bottom: 25px; text-align: left; font-size: 14px;"></div>
+            <div id="breakdown-list" style="margin-bottom: 30px; text-align: left; font-size: 14px;"></div>
             <button onclick="startReview()" style="background:#6c757d; color:white; border:none; padding:16px; border-radius:14px; width:100%; margin-bottom: 10px; font-weight:bold;">Review Mistakes</button>
-            <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:16px; border-radius:14px; width:100%; font-weight:bold;">Return Home</button>
+            <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:16px; border-radius:14px; width:100%; font-weight:bold;">Dashboard Home</button>
         </div>
     </div>
 
@@ -153,7 +151,7 @@
                 <div class="sample-chip" onclick="fillIdea('I love the UI design')">Review App</div>
             </div>
             <textarea id="idea-msg" placeholder="Write your feedback here..."></textarea>
-            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366;"><i data-lucide="send"></i> Send WhatsApp</button>
+            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366; box-shadow: 0 4px 12px rgba(37,211,102,0.3);"><i data-lucide="send"></i> Send WhatsApp</button>
         </div>
     </div>
 </div>
@@ -210,7 +208,7 @@
         document.getElementById('stat-sessions').innerText = db.sessions;
         document.getElementById('stat-best').innerText = db.best + " / 400";
         const hBox = document.getElementById('history-box');
-        hBox.innerHTML = db.history.length ? "" : "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions recorded.</div>";
+        hBox.innerHTML = db.history.length ? "" : "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions yet.</div>";
         db.history.slice().reverse().forEach(h => {
             const color = h.score >= 280 ? "var(--correct)" : (h.score >= 180 ? "var(--warn)" : "var(--wrong)");
             const d = document.createElement('div');
@@ -267,10 +265,9 @@
         try {
             for(let s of selected) {
                 document.getElementById('loader-status').innerText = `Syncing ${s}...`;
-                // ENHANCED FETCH: Use multiple attempts to hit exactly 40
                 let collected = [];
                 let attempts = 0;
-                while(collected.length < 40 && attempts < 2) {
+                while(collected.length < 40 && attempts < 3) {
                     const res = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                     const json = await res.json();
                     collected = [...collected, ...(json.data || [])];
@@ -288,17 +285,17 @@
             }
             let t = 3; const cd = document.getElementById('countdown-sync'); cd.innerText = t;
             const timer = setInterval(() => {
-                t--; cd.innerText = t || "READY!";
+                t--; cd.innerText = t || "GO!";
                 if(t < 0) { clearInterval(timer); active = selected[0]; document.getElementById('loading-screen').classList.add('hidden'); document.getElementById('exam-screen').classList.remove('hidden'); renderTabs(); loadQ(); startTimer(); }
             }, 800);
-        } catch { alert("API Error. Ensure data is on."); location.reload(); }
+        } catch { alert("Network Error."); location.reload(); }
     }
 
     function renderTabs() {
         const c = document.getElementById('sub-tabs-bar'); c.innerHTML = "";
         selected.forEach(s => {
             const b = document.createElement('button');
-            b.innerText = s; b.style.cssText = `width:auto; padding:8px 18px; font-size:11px; border:none; border-radius:12px; background:${s===active?"#007bff":"#555"}; color:white; cursor:pointer; font-weight:bold;`;
+            b.innerText = s; b.style.cssText = `width:auto; padding:8px 18px; font-size:11px; border:none; border-radius:12px; background:${s===active?"#007bff":"#555"}; color:white; cursor:pointer;`;
             b.onclick = () => { active = s; currIdx = 0; renderTabs(); loadQ(); };
             c.appendChild(b);
         });
