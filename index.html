@@ -74,11 +74,11 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin: 25px 0;">
                 <div style="background:rgba(0,123,255,0.07); padding:18px; border-radius:20px; text-align:center;">
                     <span style="font-size:11px; opacity:0.6; display:block; font-weight:bold;">SESSIONS</span>
-                    <b id="stat-sessions" style="font-size:26px; color:var(--accent);">0</b>
+                    <b id="stat-sessions" style="font-size:24px; color:var(--accent);">0</b>
                 </div>
                 <div style="background:rgba(0,123,255,0.07); padding:18px; border-radius:20px; text-align:center;">
                     <span style="font-size:11px; opacity:0.6; display:block; font-weight:bold;">TOP SCORE</span>
-                    <b id="stat-best" style="font-size:26px; color:var(--accent);">0%</b>
+                    <b id="stat-best" style="font-size:24px; color:var(--accent);">0%</b>
                 </div>
             </div>
             <p style="font-weight:800; font-size:15px; margin-bottom:15px;">Session History</p>
@@ -90,7 +90,7 @@
         <div id="login-screen" class="card">
             <h3>CBT Portal</h3>
             <input type="text" id="username-in" placeholder="Your Full Name">
-            <button class="primary-btn" onclick="saveName()">Login to Vibe <i data-lucide="log-in" style="width:18px;"></i></button>
+            <button class="primary-btn" onclick="saveName()">Log In <i data-lucide="log-in" style="width:18px;"></i></button>
         </div>
 
         <div id="setup-screen" class="card hidden">
@@ -114,7 +114,7 @@
             
             <div id="q-meta" style="margin-top:15px;">
                 <span id="q-sub-title">Subject</span>
-                <span id="q-progress-text">0 / 40</span>
+                <span id="q-progress-text">0 / 40 Answered</span>
             </div>
             <div id="question-box"></div>
             <div id="options-box"></div>
@@ -153,7 +153,7 @@
 
 <div id="calc-modal" class="hidden">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-        <span style="font-size:11px; opacity:0.5; font-weight:bold; color: white;">JAMB CALC</span>
+        <span style="font-size:11px; opacity:0.5; font-weight:bold; color: white;">VIBE CALC</span>
         <button class="calc-cancel-btn" onclick="toggleCalc()"><i data-lucide="x" style="width:16px;"></i></button>
     </div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
@@ -182,6 +182,7 @@
     
     let store = JSON.parse(localStorage.getItem('vibe_master_db')) || { name: "", sessions: 0, best: 0, history: [] };
     let eData = {}, uAns = {}, selected = [], active = "", currIdx = 0;
+    let mainTimer;
 
     function refresh() {
         document.getElementById('user-display-name').innerText = (store.name || "Student").toUpperCase();
@@ -319,15 +320,20 @@
 
     function startTimer() {
         let t = 120 * 60;
-        const i = setInterval(() => {
+        mainTimer = setInterval(() => {
             let m = Math.floor(t/60), s = t%60;
             document.getElementById('exam-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if(t <= 0) { clearInterval(i); submitCBT(); }
+            if(t <= 0) { 
+                clearInterval(mainTimer); 
+                submitCBT(); // Automatic Submission
+                alert("Time is up! Your result has been submitted automatically.");
+            }
             t--;
         }, 1000);
     }
 
     function submitCBT() {
+        if(mainTimer) clearInterval(mainTimer);
         let score = 0, total = 0, log = "";
         selected.forEach(s => {
             let sScore = 0;
@@ -341,7 +347,7 @@
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('final-percent').innerText = p + "%";
-        document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.06); padding:20px; border-radius:18px; font-weight:bold; line-height:1.5;">${log}</pre>`;
+        document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:12px;">${log}</pre>`;
     }
 
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
