@@ -9,8 +9,8 @@
         :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; }
         [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 85px; overflow-x: hidden; }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 85px; }
         #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
         
         .card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; width: 100%; }
@@ -18,22 +18,20 @@
 
         /* Navigation */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; transition: 0.2s; color: var(--text); }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.5; flex: 1; color: var(--text); }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
-        .nav-item i { margin-bottom: 4px; }
 
-        /* Dashboard Stats */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .stat-card { background: rgba(0,123,255,0.05); padding: 15px; border-radius: 15px; text-align: center; }
-        .stat-card b { font-size: 20px; display: block; color: var(--accent); }
+        /* Progress Bar */
+        .progress-container { width: 100%; background: #eee; height: 8px; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.3s; }
 
         /* Buttons & Grid */
-        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
-        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
+        button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
+        .subject-chip { padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; font-size: 13px; text-align: center; cursor: pointer; }
         .subject-chip.selected { background: var(--accent); color: white; }
 
-        /* Exam UI */
+        /* Exam Elements */
         .opt-btn { background: transparent; border: 1.5px solid #d1d9e0; color: var(--text); text-align: left; margin-bottom: 10px; width: 100%; padding: 14px; border-radius: 12px; cursor: pointer; }
         .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.1); }
         #timer-box { font-family: monospace; font-size: 18px; color: #d32f2f; background: rgba(211,47,47,0.1); padding: 8px 12px; border-radius: 10px; }
@@ -42,10 +40,7 @@
         #calc-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: #1c1c1e; padding: 20px; border-radius: 24px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .calc-screen { width: 100%; height: 60px; background: #000; color: #fff; border: none; text-align: right; padding: 15px; font-size: 24px; margin-bottom: 15px; border-radius: 12px; }
         .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; margin:0; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
-
-        /* Countdown Loader */
-        #loading-count { font-size: 48px; font-weight: bold; color: var(--accent); margin: 20px 0; }
+        .calc-btns button { padding: 15px; background: #3a3a3c; border-radius: 50%; width: 50px; height: 50px; }
     </style>
 </head>
 <body data-theme="light">
@@ -58,36 +53,38 @@
 
     <div id="tab-dash">
         <div class="card">
-            <h3>Welcome Back, <span id="display-name">Student</span></h3>
-            <div class="stat-grid">
-                <div class="stat-card"><span>Sessions</span><b id="stat-sessions">0</b></div>
-                <div class="stat-card"><span>Best Score</span><b id="stat-best">0%</b></div>
+            <h3>Hi, <span id="display-name">Student</span></h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">
+                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
+                    <span>Sessions</span><b id="stat-sessions" style="display:block; font-size:20px; color:var(--accent);">0</b>
+                </div>
+                <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; text-align:center;">
+                    <span>Best Score</span><b id="stat-best" style="display:block; font-size:20px; color:var(--accent);">0%</b>
+                </div>
             </div>
-            <p style="font-size: 13px; margin-bottom: 5px;">Recent Result:</p>
-            <div id="recent-result" style="padding:15px; border-radius:12px; border:1px dashed #ccc; font-size:14px; text-align:center;">
-                No sessions completed yet.
-            </div>
-            <button onclick="switchTab('exam', document.getElementById('nav-exam'))"><i data-lucide="play"></i> Start Practice</button>
+            <div id="recent-result" style="padding:15px; border-radius:12px; border:1px dashed #ccc; font-size:14px; text-align:center; margin-bottom:15px;">No recent history.</div>
+            <button onclick="switchTab('exam', document.getElementById('nav-exam'))"><i data-lucide="play"></i> Start New Practice</button>
         </div>
     </div>
 
     <div id="tab-exam" class="hidden">
         <div id="login-screen" class="card">
-            <h3>Student Login</h3>
-            <input type="text" id="username" placeholder="Enter Full Name" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
-            <button onclick="saveUser()">Login & Sync</button>
+            <h3>Login</h3>
+            <input type="text" id="username" placeholder="Full Name" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #ccc; margin-bottom:15px;">
+            <button onclick="saveUser()">Continue</button>
         </div>
 
         <div id="setup-screen" class="card hidden">
-            <h3>CBT Setup</h3>
+            <h3>Choose Subjects</h3>
             <div class="subject-grid" id="subject-list"></div>
-            <button onclick="startExam()"><i data-lucide="zap"></i> Prepare Questions</button>
+            <button onclick="startExam()"><i data-lucide="zap"></i> Generate Exam</button>
         </div>
 
         <div id="loading-screen" class="card hidden" style="text-align: center;">
-            <h3>Generating Exam...</h3>
-            <div id="loading-count">5</div>
-            <p style="font-size:12px; opacity:0.6;">Connecting to JAMB API</p>
+            <h3 id="loading-title">Fetching Questions...</h3>
+            <div class="progress-container"><div id="load-progress" class="progress-bar"></div></div>
+            <div id="loading-count" style="font-size: 40px; font-weight: bold; color: var(--accent);">--</div>
+            <p id="loading-status" style="font-size:12px; opacity:0.6;">Connecting to Server</p>
         </div>
 
         <div id="exam-screen" class="card hidden">
@@ -102,39 +99,30 @@
                 <button onclick="prevQ()" style="background:#6c757d">Back</button>
                 <button onclick="nextQ()">Next</button>
             </div>
-            <button onclick="finishExam()" style="background:#dc3545; margin-top:15px;">Submit Exam</button>
+            <button onclick="finishExam()" style="background:#dc3545; margin-top:15px;">Final Submit</button>
         </div>
 
         <div id="result-screen" class="card hidden">
-            <h2 style="text-align:center;">Exam Result</h2>
+            <h2 style="text-align:center;">Exam Complete</h2>
             <div id="result-summary" style="text-align:center; padding:20px; font-size:18px;"></div>
-            <button onclick="location.reload()" style="background:#28a745;">Back to Dashboard</button>
+            <button onclick="location.reload()" style="background:#28a745;">Dashboard</button>
         </div>
     </div>
 
     <div id="tab-ideas" class="hidden">
         <div class="card">
-            <h3>Vibe Suggestions</h3>
-            <p style="font-size:14px; opacity:0.7;">Tap a quick idea:</p>
-            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
-                <span onclick="fillIdea('Add more Biology explanations')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Explanations</span>
-                <span onclick="fillIdea('Calculator is glitchy on mobile')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Fix Calc</span>
-                <span onclick="fillIdea('The timer is too fast')" class="subject-chip" style="padding:6px 12px; font-size:11px;">Timer</span>
-            </div>
-            <textarea id="feedback-text" placeholder="Type your idea..." style="width:100%; height:120px; border-radius:12px; padding:10px;"></textarea>
-            <button onclick="sendFeedback()"><i data-lucide="send"></i> Send Idea</button>
+            <h3>Vibe Feedback</h3>
+            <textarea id="feedback-text" placeholder="Type your idea here..." style="width:100%; height:120px; border-radius:12px; padding:10px; border:1.5px solid #ccc;"></textarea>
+            <button onclick="sendFeedback()"><i data-lucide="send"></i> Send to Admin</button>
         </div>
     </div>
 </div>
 
 <div id="calc-modal" class="hidden">
-    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:15px;">
-        <span>JAMB CALC</span>
-        <span onclick="toggleCalc()" style="cursor:pointer;">?</span>
-    </div>
+    <div style="display:flex; justify-content:space-between; color:white; margin-bottom:15px;"><span>JAMB CALC</span><span onclick="toggleCalc()" style="cursor:pointer;">?</span></div>
     <input type="text" id="calc-display" class="calc-screen" readonly value="0">
     <div class="calc-btns">
-        <button onclick="clr()" style="background:#acacaf; color:black;">AC</button><button onclick="press('/')" style="background:#ff9f0a;">÷</button><button onclick="press('*')" style="background:#ff9f0a;">×</button><button onclick="press('-')" style="background:#ff9f0a;">?</button>
+        <button onclick="clr()">C</button><button onclick="press('/')" style="background:#ff9f0a;">÷</button><button onclick="press('*')" style="background:#ff9f0a;">×</button><button onclick="press('-')" style="background:#ff9f0a;">?</button>
         <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button onclick="press('+')" style="background:#ff9f0a;">+</button>
         <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button onclick="calculate()" style="background:#ff9f0a;">=</button>
         <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button onclick="press('0')">0</button>
@@ -148,7 +136,6 @@
 </div>
 
 <script>
-    // --- APP STATE & STORAGE ---
     const API_TOKEN = "ALOC-37270319fe62227b783f";
     const SUBJECTS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography"];
     
@@ -158,15 +145,11 @@
     function updateStats() {
         document.getElementById('stat-sessions').innerText = stats.sessions;
         document.getElementById('stat-best').innerText = stats.best + "%";
-        if(stats.last) document.getElementById('recent-result').innerHTML = `<b>Last Session:</b> ${stats.last}`;
+        if(stats.last) document.getElementById('recent-result').innerHTML = `<b>Recent:</b> ${stats.last}`;
         localStorage.setItem('jamb_vibe_stats', JSON.stringify(stats));
     }
     updateStats();
-
-    // Icon Rendering
     lucide.createIcons();
-
-    function fillIdea(t) { document.getElementById('feedback-text').value = t; }
 
     function switchTab(tab, el) {
         ['dash','exam','ideas'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
@@ -177,14 +160,11 @@
     }
 
     function toggleTheme() {
-        const b = document.body;
-        const current = b.dataset.theme;
-        b.dataset.theme = current === 'dark' ? 'light' : 'dark';
-        document.getElementById('theme-icon').innerHTML = `<i data-lucide="${b.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
+        document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.getElementById('theme-icon').innerHTML = `<i data-lucide="${document.body.dataset.theme === 'dark' ? 'sun' : 'moon'}"></i>`;
         lucide.createIcons();
     }
 
-    // Build Subjects
     const list = document.getElementById('subject-list');
     SUBJECTS.forEach(s => {
         const d = document.createElement('div');
@@ -209,26 +189,40 @@
         document.getElementById('setup-screen').classList.add('hidden');
         document.getElementById('loading-screen').classList.remove('hidden');
 
-        // Countdown logic
-        let count = 5;
-        const cBox = document.getElementById('loading-count');
-        const cd = setInterval(() => {
-            count--;
-            cBox.innerText = count;
-            if(count <= 0) clearInterval(cd);
-        }, 800);
+        let completed = 0;
+        const progressBar = document.getElementById('load-progress');
+        const statusText = document.getElementById('loading-status');
 
         try {
+            // STEP 1: FETCH DATA
             for(let s of selectedSubs) {
+                statusText.innerText = `Downloading ${s}...`;
                 const r = await fetch(`https://questions.aloc.com.ng/api/v2/m?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': API_TOKEN } });
                 const d = await r.json();
                 examData[s] = d.data.map(q => ({ q: q.question, opts: [q.option.a, q.option.b, q.option.c, q.option.d], ans: ["a","b","c","d"].indexOf(q.answer.toLowerCase()) }));
                 userAnswers[s] = {};
+                completed++;
+                progressBar.style.width = (completed / selectedSubs.length) * 100 + "%";
             }
-            activeSub = selectedSubs[0];
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('exam-screen').classList.remove('hidden');
-            renderTabs(); loadQ(); startTimer();
+
+            // STEP 2: CORRESPONDING COUNTDOWN (Starts ONLY after fetch is done)
+            document.getElementById('loading-title').innerText = "Starting Session";
+            let count = 3;
+            const cBox = document.getElementById('loading-count');
+            cBox.innerText = count;
+
+            const cd = setInterval(() => {
+                count--;
+                cBox.innerText = count;
+                if(count <= 0) {
+                    clearInterval(cd);
+                    activeSub = selectedSubs[0];
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    document.getElementById('exam-screen').classList.remove('hidden');
+                    renderTabs(); loadQ(); startTimer();
+                }
+            }, 1000);
+
         } catch { alert("Network Error"); location.reload(); }
     }
 
@@ -272,24 +266,20 @@
     function finishExam() {
         let score = 0, total = 0;
         selectedSubs.forEach(s => { examData[s].forEach((q, i) => { total++; if(userAnswers[s][i] === q.ans) score++; }); });
-        
         const percent = Math.round((score/total)*100);
         stats.sessions++;
         if(percent > stats.best) stats.best = percent;
-        stats.last = `${selectedSubs.join('/')}: ${score}/${total} (${percent}%)`;
+        stats.last = `${score}/${total} (${percent}%)`;
         updateStats();
-
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('result-summary').innerHTML = `<h1 style="color:#28a745">${percent}%</h1><p>You scored ${score} out of ${total}</p>`;
     }
 
-    // Calc Engine
     function toggleCalc() { document.getElementById('calc-modal').classList.toggle('hidden'); }
     function press(v) { let d = document.getElementById('calc-display'); d.value === '0' ? d.value = v : d.value += v; }
     function clr() { document.getElementById('calc-display').value = '0'; }
-    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Error"; } }
-
+    function calculate() { try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); } catch { document.getElementById('calc-display').value = "Err"; } }
     function sendFeedback() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('feedback-text').value)}`); }
 </script>
 </body>
