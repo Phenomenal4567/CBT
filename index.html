@@ -18,30 +18,34 @@
 
         /* Navigation */
         .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); }
+        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); transition: 0.2s; }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
 
-        /* Buttons & Inputs */
-        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,123,255,0.2); }
+        /* Buttons */
+        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
         .primary-btn:active { transform: scale(0.97); }
         input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
 
-        /* Subject Selection Grid - SCROLLABLE */
-        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 260px; overflow-y: auto; padding: 5px; border-radius: 12px; }
-        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
-        .sub-chip.selected { background: var(--accent); color: white; }
+        /* Loading UI */
+        .prog-outer { width: 100%; background: rgba(0,123,255,0.1); height: 32px; border-radius: 16px; margin: 20px 0; overflow: hidden; border: 1px solid var(--border); }
+        #prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 900; }
 
-        /* Improved Loading UI */
-        .prog-outer { width: 100%; background: rgba(0,123,255,0.1); height: 32px; border-radius: 16px; margin: 25px 0; overflow: hidden; border: 1px solid var(--border); position: relative; }
-        #prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.5s ease-in-out; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 900; }
+        /* History */
+        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .history-score-blob { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; font-size: 14px; }
 
-        /* Question UI Option Buttons */
+        /* Question UI */
+        #question-box { background: rgba(0,123,255,0.03); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
         .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; transition: 0.2s; font-size: 15px; display: flex; align-items: center; gap: 12px; }
         .opt-letter { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
         .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.05); }
         .opt-btn.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* Navigation Jump Grid */
+        /* Grid */
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding: 5px; }
+        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
+        .sub-chip.selected { background: var(--accent); color: white; }
+
         .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 140px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; border: 1px solid var(--border); }
         .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
         .q-num.answered { background: var(--accent); color: white; }
@@ -49,14 +53,9 @@
         .q-num.rev-correct { background: var(--correct); color: white; }
         .q-num.rev-wrong { background: var(--wrong); color: white; }
 
-        /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { width: 100%; max-width: 350px; background: var(--card); border-radius: 28px; padding: 25px; color: var(--text); border: 1px solid var(--border); text-align: center; }
 
-        /* History Blob */
-        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .history-score-blob { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; font-size: 14px; }
-        
         .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 700; transition: 0.2s; }
     </style>
 </head>
@@ -64,7 +63,7 @@
 
 <div id="app-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h2 id="header-title" style="margin:0; font-weight: 800; letter-spacing: -0.5px;">Home</h2>
+        <h2 id="header-title" style="margin:0; font-weight: 800;">Home</h2>
         <div onclick="toggleTheme()" style="cursor:pointer; padding: 6px;"><i data-lucide="moon" id="theme-icon"></i></div>
     </div>
 
@@ -93,7 +92,7 @@
     <div id="tab-practice" class="hidden">
         <div id="login-screen" class="card">
             <h3>CBT Portal</h3>
-            <input type="text" id="username-in" placeholder="Your Full Name">
+            <input type="text" id="username-in" placeholder="Full Name">
             <button class="primary-btn" onclick="saveName()">Log In <i data-lucide="log-in"></i></button>
         </div>
 
@@ -119,7 +118,7 @@
                 <span id="q-sub-title" style="color: var(--accent);">Subject</span>
                 <span id="q-progress-text">0 / 40 Answered</span>
             </div>
-            <div id="question-box" style="margin: 15px 0; padding: 20px; background: rgba(0,0,0,0.02); border-left: 5px solid var(--accent); border-radius: 10px;"></div>
+            <div id="question-box"></div>
             <div id="options-box"></div>
             <div style="display: flex; gap: 12px; margin-top:25px;">
                 <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Back</button>
@@ -132,7 +131,7 @@
 
         <div id="result-screen" class="card hidden" style="text-align:center;">
             <p style="font-weight:bold; opacity:0.6;">Aggregate Score</p>
-            <h1 id="final-aggregate" style="font-size: 60px; color: #28a745; margin: 10px 0;">0 / 400</h1>
+            <h1 id="final-percent" style="font-size: 55px; color: #28a745; margin: 10px 0;">0 / 400</h1>
             <div id="breakdown-list" style="margin-bottom: 25px; text-align: left; font-size: 14px;"></div>
             <button onclick="startReview()" style="background:#6c757d; color:white; border:none; padding:16px; border-radius:14px; width:100%; margin-bottom: 10px; font-weight:bold;">Review Mistakes</button>
             <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:16px; border-radius:14px; width:100%; font-weight:bold;">Dashboard Home</button>
@@ -154,30 +153,44 @@
 </div>
 
 <div id="modal-container" class="modal-overlay hidden">
-    <div id="submit-modal" class="modal-card hidden">
-        <h3 style="margin:0 0 10px;">Submit Exam?</h3>
-        <p style="font-size:13px; opacity:0.6; margin-bottom:20px;">Finished all subjects? Submit to see aggregate.</p>
-        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Submit</button>
-        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Not Yet</button>
+    <div id="calc-modal" class="modal-card hidden" style="background: #1c1c1e; width: 290px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; color: white;">
+            <span style="font-size:10px; opacity:0.5; font-weight:bold;">JAMB VIBE CALC</span>
+            <div onclick="closeModals()" style="background:#ff3b30; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer;">✕</div>
+        </div>
+        <input type="text" id="calc-display" style="width:100%; height:60px; background:#000; color:#fff; border:none; text-align:right; padding:15px; font-size:28px; margin-bottom:18px; border-radius:12px; font-family:monospace;" readonly value="0">
+        <div class="calc-btns" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+            <button onclick="cClr()" style="padding:15px; background:#3a3a3c; border-radius:50%; color:white; border:none;">C</button><button onclick="cPress('/')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">÷</button><button onclick="cPress('*')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">×</button><button onclick="cPress('-')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">−</button>
+            <button onclick="cPress('7')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">7</button><button onclick="cPress('8')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">8</button><button onclick="cPress('9')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">9</button><button onclick="cPress('+')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">+</button>
+            <button onclick="cPress('4')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">4</button><button onclick="cPress('5')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">5</button><button onclick="cPress('6')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">6</button><button onclick="cSolve()" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">=</button>
+            <button onclick="cPress('1')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">1</button><button onclick="cPress('2')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">2</button><button onclick="cPress('3')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">3</button><button onclick="cPress('0')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">0</button>
+        </div>
     </div>
 
-    <div id="clear-modal" class="modal-card hidden">
-        <h3 style="margin:0 0 10px;">Reset Data?</h3>
-        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Clear All</button>
-        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Cancel</button>
+    <div id="submit-modal" class="modal-card hidden">
+        <h3 style="margin:0 0 10px;">Submit Exam?</h3>
+        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Submit</button>
+        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Back</button>
     </div>
-    
+
     <div id="receipt-modal" class="modal-card hidden">
         <h3 style="margin-top:0; color:var(--accent);">Report Card</h3>
         <hr style="opacity:0.1; margin: 15px 0;">
         <div id="detail-content" style="font-weight: 600; line-height: 2; text-align: left; font-size: 14px;"></div>
         <button onclick="closeModals()" class="primary-btn" style="margin-top: 20px;">Close</button>
     </div>
+
+    <div id="clear-modal" class="modal-card hidden">
+        <h3 style="margin:0 0 10px;">Clear Everything?</h3>
+        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Yes, Clear</button>
+        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Cancel</button>
+    </div>
 </div>
 
 <div class="nav-bar">
     <div class="nav-item active" onclick="switchTab('home', this)"><i data-lucide="home"></i><br>Home</div>
-    <div id="nav-pract" class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
+    <div class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
+    <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
 </div>
 
 <script>
@@ -195,7 +208,7 @@
         const hBox = document.getElementById('history-box');
         const clr = document.getElementById('clear-data-btn');
         if (db.history.length > 0) { hBox.innerHTML = ""; clr.classList.remove('hidden'); } 
-        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions.</div>"; clr.classList.add('hidden'); }
+        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions yet.</div>"; clr.classList.add('hidden'); }
         db.history.slice().reverse().forEach(h => {
             const color = h.score >= 280 ? "var(--correct)" : (h.score >= 180 ? "var(--warn)" : "var(--wrong)");
             const d = document.createElement('div');
@@ -213,9 +226,10 @@
     function performClear() { db.history = []; db.best = 0; db.sessions = 0; closeModals(); refresh(); }
     function showSubmitModal() { document.getElementById('modal-container').classList.remove('hidden'); document.getElementById('submit-modal').classList.remove('hidden'); lucide.createIcons(); }
     function closeModals() { document.querySelectorAll('.modal-overlay, .modal-card').forEach(m => m.classList.add('hidden')); }
+    function toggleCalc() { document.getElementById('modal-container').classList.toggle('hidden'); document.getElementById('calc-modal').classList.toggle('hidden'); }
 
     function switchTab(t, el) {
-        ['home', 'practice'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
+        ['home', 'practice', 'ideas'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
         document.getElementById('tab-'+t).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
@@ -236,10 +250,9 @@
     SUBS.forEach(s => {
         const c = document.createElement('div');
         c.className = 'sub-chip'; c.innerText = s;
-        c.style.cssText = "padding:14px; border:2px solid var(--accent); border-radius:16px; text-align:center; cursor:pointer; font-size:13px; background:var(--card); font-weight:600;";
         c.onclick = () => {
-            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.style.background = ""; c.style.color = ""; }
-            else if(selected.length < 4) { selected.push(s); c.style.background = "var(--accent)"; c.style.color = "white"; }
+            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.classList.remove('selected'); }
+            else if(selected.length < 4) { selected.push(s); c.classList.add('selected'); }
         };
         gridSetup.appendChild(c);
     });
@@ -256,32 +269,22 @@
                 document.getElementById('loader-status').innerText = `Downloading ${s}...`;
                 const res = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                 const json = await res.json();
-                
                 eData[s] = (json.data || []).slice(0, 40).map(q => ({
                     q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
                     opts: [q.option.a, q.option.b, q.option.c, q.option.d],
-                    // Robust Answer Mapping
                     ans: ["a","b","c","d"].indexOf((q.answer || "").toLowerCase().trim())
                 }));
                 uAns[s] = {};
                 completed++;
-                // UPDATE PROGRESS BAR
                 let pct = Math.round((completed / selected.length) * 100);
-                bar.style.width = pct + "%";
-                bar.innerHTML = pct + "%";
+                bar.style.width = pct + "%"; bar.innerText = pct + "%";
             }
-
-            document.getElementById('loader-status').innerText = "Finalizing Sync...";
+            document.getElementById('loader-status').innerText = "Almost Ready...";
             let t = 3; const timer = setInterval(() => {
                 document.getElementById('countdown-sync').innerText = t; t--;
-                if(t < 0) {
-                    clearInterval(timer); active = selected[0];
-                    document.getElementById('loading-screen').classList.add('hidden');
-                    document.getElementById('exam-screen').classList.remove('hidden');
-                    renderTabs(); loadQ(); startTimer();
-                }
+                if(t < 0) { clearInterval(timer); active = selected[0]; document.getElementById('loading-screen').classList.add('hidden'); document.getElementById('exam-screen').classList.remove('hidden'); renderTabs(); loadQ(); startTimer(); }
             }, 1000);
-        } catch { alert("API Offline. Try again."); location.reload(); }
+        } catch { alert("Network Trip. Check internet."); location.reload(); }
     }
 
     function renderTabs() {
@@ -303,11 +306,10 @@
         const box = document.getElementById('options-box'); box.innerHTML = "";
         q.opts.forEach((o, i) => {
             const b = document.createElement('button');
-            // Cast both to string for bulletproof comparison
-            b.className = `opt-btn ${String(uAns[active][currIdx]) === String(i) ? 'selected' : ''}`;
+            b.className = `opt-btn ${uAns[active][currIdx] === i ? 'selected' : ''}`;
             if(isReview) {
                 if(i === q.ans) b.style.borderColor = "var(--correct)";
-                else if(String(uAns[active][currIdx]) === String(i)) b.style.borderColor = "var(--wrong)";
+                else if(uAns[active][currIdx] === i) b.style.borderColor = "var(--wrong)";
                 b.disabled = true;
             }
             b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
@@ -324,7 +326,7 @@
             n.className = `q-num ${i === currIdx ? 'current' : ''}`;
             if(isReview) {
                 if(uAns[active][i] === undefined) n.style.opacity = "0.3";
-                else if(String(uAns[active][i]) === String(q.ans)) n.classList.add('rev-correct');
+                else if(Number(uAns[active][i]) === Number(q.ans)) n.classList.add('rev-correct');
                 else n.classList.add('rev-wrong');
             } else if(uAns[active][i] !== undefined) n.classList.add('answered');
             n.innerText = i + 1;
@@ -348,40 +350,28 @@
 
     function submitCBT() {
         closeModals(); clearInterval(mainTimer);
-        let rawScore = 0;
-        let totalQsPossible = 0;
+        let correctCount = 0;
+        let totalPossible = selected.length * 40;
         let log = "";
         
         selected.forEach(s => {
-            let sScore = 0;
-            eData[s].forEach((q, i) => { 
-                totalQsPossible++;
-                // Strict value comparison to fix the "0/400" bug
-                if(uAns[s][i] !== undefined && String(uAns[s][i]) === String(q.ans)) { 
-                    rawScore++; 
-                    sScore++; 
-                } 
+            let sCorrect = 0;
+            eData[s].forEach((q, i) => {
+                if(uAns[s][i] !== undefined && Number(uAns[s][i]) === Number(q.ans)) {
+                    correctCount++;
+                    sCorrect++;
+                }
             });
-            log += `${s}: ${sScore}/40\n`;
+            log += `${s}: ${sCorrect}/40\n`;
         });
         
-        // JAMB AGGREGATE FORMULA
-        // (Total Correct / Total Possible Questions) * 400
-        const aggregate = Math.round((rawScore / totalQsPossible) * 400);
-        
-        db.sessions++; 
-        if(aggregate > db.best) db.best = aggregate;
-        db.history.push({ 
-            date: new Date().toLocaleDateString(), 
-            score: aggregate, 
-            detail: log, 
-            subjectTags: selected.map(s => s.substring(0,3)).join(', ') 
-        });
-        
+        const aggregate = Math.round((correctCount / totalPossible) * 400);
+        db.sessions++; if(aggregate > db.best) db.best = aggregate;
+        db.history.push({ date: new Date().toLocaleDateString(), score: aggregate, detail: log, subjectTags: selected.map(s => s.substring(0,3)).join(', ') });
         refresh();
         document.getElementById('exam-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('final-aggregate').innerText = `${aggregate} / 400`;
+        document.getElementById('final-percent').innerText = `${aggregate} / 400`;
         document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:15px;">${log}</pre>`;
     }
 
