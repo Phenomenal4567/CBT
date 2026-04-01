@@ -99,6 +99,71 @@
     #prog-bar { width: 0%; height: 100%; background: var(--accent); transition: width .35s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 800; }
     #countdown-sync { font-size: 44px; font-weight: 900; color: var(--accent); text-align: center; min-height: 60px; line-height: 1; }
 
+    /* ── Hint Card ── */
+    .hint-card {
+      margin-top: 20px;
+      background: linear-gradient(135deg, rgba(0,123,255,0.08) 0%, rgba(0,123,255,0.03) 100%);
+      border: 1.5px solid rgba(0,123,255,0.18);
+      border-radius: 16px;
+      padding: 16px 18px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      min-height: 90px;
+    }
+    .hint-card::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(0,123,255,0.07);
+    }
+    .hint-tag {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .hint-tag::before {
+      content: '💡';
+      font-size: 11px;
+    }
+    .hint-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .hint-text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hint-dots {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+    .hint-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .hint-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+
     /* ── Subject grid ── */
     .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; max-height: 280px; overflow-y: auto; padding: 2px; }
     .sub-chip { padding: 13px 10px; border: 2px solid var(--border); border-radius: 14px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; transition: .15s; }
@@ -225,6 +290,13 @@
       <div class="prog-outer"><div id="prog-bar">0%</div></div>
       <div id="loading-subjects" style="font-size:12px; color:var(--muted); margin-bottom:12px;"></div>
       <div id="countdown-sync"></div>
+
+      <!-- Hints -->
+      <div class="hint-card">
+        <div class="hint-tag">Study Tip</div>
+        <div class="hint-text" id="hint-text">Loading tip...</div>
+      </div>
+      <div class="hint-dots" id="hint-dots"></div>
     </div>
 
     <!-- Exam -->
@@ -459,6 +531,7 @@
 
     let completed = 0;
     subsEl.innerText = `Loading: ${selected.join(', ')}`;
+    startHints();
 
     try {
       /* All requests fire at the same time */
@@ -484,6 +557,7 @@
       results.forEach(({ s, data }) => { eData[s] = data; uAns[s] = {}; });
 
       statusEl.innerText = "Almost Ready!";
+      stopHints();
       subsEl.innerText = "";
       let t = 3;
       const cd = setInterval(() => {
@@ -499,6 +573,7 @@
       }, 1000);
 
     } catch(e) {
+      stopHints();
       alert("Network error. Please check your connection and try again.");
       location.reload();
     }
@@ -612,6 +687,49 @@
   /* ── Feedback ── */
   function fillIdea(t) { document.getElementById('idea-msg').value = t; }
   function sendIdea()  { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
+
+  /* ── Hints ── */
+  const HINTS = [
+    "Read every option carefully — JAMB loves tricky near-correct answers.",
+    "In English, eliminate options that change the original meaning of the passage.",
+    "For Maths, write out your workings. Never calculate purely in your head.",
+    "Flag difficult questions and return to them — don't waste exam time.",
+    "In Biology, focus on diagrams: cell structures, systems, and life cycles.",
+    "Chemistry mnemonics help — e.g. OIL RIG for oxidation and reduction.",
+    "In Government, know your Nigerian constitution chapters and amendments.",
+    "Time management: spend no more than 1 minute 48 seconds per question.",
+    "Past questions are your best friend — 60%+ of JAMB repeats old topics.",
+    "Stay calm. A relaxed mind recalls information far better under pressure.",
+  ];
+  let hintIdx = 0, hintTimer;
+
+  function startHints() {
+    const dotsEl = document.getElementById('hint-dots');
+    dotsEl.innerHTML = HINTS.map((_, i) =>
+      `<div class="hint-dot${i === 0 ? ' active' : ''}" id="hd-${i}"></div>`
+    ).join('');
+    showHint(0);
+    hintTimer = setInterval(() => {
+      hintIdx = (hintIdx + 1) % HINTS.length;
+      showHint(hintIdx);
+    }, 3500);
+  }
+
+  function showHint(i) {
+    const el = document.getElementById('hint-text');
+    el.classList.remove('visible');
+    setTimeout(() => {
+      el.innerText = HINTS[i];
+      el.classList.add('visible');
+    }, 200);
+    document.querySelectorAll('.hint-dot').forEach((d, idx) => {
+      d.classList.toggle('active', idx === i);
+    });
+  }
+
+  function stopHints() {
+    clearInterval(hintTimer);
+  }
 
   /* ── Calculator ── */
   let calcVal = "0", calcPrev = "", calcOp = "", calcFresh = false;
