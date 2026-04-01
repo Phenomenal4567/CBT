@@ -41,12 +41,11 @@
         .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.05); }
         .opt-btn.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* Scrollable Grid */
+        /* Grid */
         .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding: 5px; }
         .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
         .sub-chip.selected { background: var(--accent); color: white; }
 
-        /* Jump Grid */
         .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 140px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; border: 1px solid var(--border); }
         .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
         .q-num.answered { background: var(--accent); color: white; }
@@ -182,7 +181,7 @@
     </div>
 
     <div id="clear-modal" class="modal-card hidden">
-        <h3 style="margin:0 0 10px;">Reset Data?</h3>
+        <h3 style="margin:0 0 10px;">Clear Everything?</h3>
         <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Yes, Clear</button>
         <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Cancel</button>
     </div>
@@ -230,7 +229,6 @@
     function toggleCalc() { document.getElementById('modal-container').classList.toggle('hidden'); document.getElementById('calc-modal').classList.toggle('hidden'); }
 
     function switchTab(t, el) {
-        // FIXED: Added 'ideas' to the layout loop
         ['home', 'practice', 'ideas'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
         document.getElementById('tab-'+t).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -252,10 +250,9 @@
     SUBS.forEach(s => {
         const c = document.createElement('div');
         c.className = 'sub-chip'; c.innerText = s;
-        c.style.cssText = "padding:14px; border:2px solid var(--accent); border-radius:16px; text-align:center; cursor:pointer; font-size:13px; background:var(--card); font-weight:600;";
         c.onclick = () => {
-            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.style.background = ""; c.style.color = ""; }
-            else if(selected.length < 4) { selected.push(s); c.style.background = "var(--accent)"; c.style.color = "white"; }
+            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.classList.remove('selected'); }
+            else if(selected.length < 4) { selected.push(s); c.classList.add('selected'); }
         };
         gridSetup.appendChild(c);
     });
@@ -270,8 +267,7 @@
             let completed = 0;
             for(let s of selected) {
                 document.getElementById('loader-status').innerText = `Downloading ${s}...`;
-                // API UPDATED TO MYQUEST
-                const res = await fetch(`https://api.myquest.com.ng/api/questions?subject=${s.toLowerCase()}&limit=40`, { headers: { 'AccessToken': KEY } });
+                const res = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
                 const json = await res.json();
                 eData[s] = (json.data || []).slice(0, 40).map(q => ({
                     q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
@@ -280,7 +276,6 @@
                 }));
                 uAns[s] = {};
                 completed++;
-                // SMOOTH LOADING UI FIX
                 let pct = Math.round((completed / selected.length) * 100);
                 bar.style.width = pct + "%"; bar.innerText = pct + "%";
             }
@@ -311,11 +306,10 @@
         const box = document.getElementById('options-box'); box.innerHTML = "";
         q.opts.forEach((o, i) => {
             const b = document.createElement('button');
-            // AGGREGATE FIX: Robust comparison
-            b.className = `opt-btn ${Number(uAns[active][currIdx]) === Number(i) ? 'selected' : ''}`;
+            b.className = `opt-btn ${uAns[active][currIdx] === i ? 'selected' : ''}`;
             if(isReview) {
                 if(i === q.ans) b.style.borderColor = "var(--correct)";
-                else if(Number(uAns[active][currIdx]) === Number(i)) b.style.borderColor = "var(--wrong)";
+                else if(uAns[active][currIdx] === i) b.style.borderColor = "var(--wrong)";
                 b.disabled = true;
             }
             b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
@@ -363,7 +357,6 @@
         selected.forEach(s => {
             let sCorrect = 0;
             eData[s].forEach((q, i) => {
-                // FIXED AGGREGATE LOGIC
                 if(uAns[s][i] !== undefined && Number(uAns[s][i]) === Number(q.ans)) {
                     correctCount++;
                     sCorrect++;
