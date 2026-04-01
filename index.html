@@ -1,383 +1,637 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAMB CBT Pro</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root { --bg: #f0f4f8; --card: #ffffff; --text: #1a2a3a; --accent: #007bff; --nav: #ffffff; --border: #d1d9e0; --correct: #28a745; --wrong: #dc3545; --warn: #ff9f0a; }
-        [data-theme="dark"] { --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; --nav: #161b22; --border: #30363d; }
-        
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 95px; overflow-x: hidden; }
-        #app-container { width: 100%; max-width: 500px; margin: auto; padding: 15px; }
-        
-        .card { background: var(--card); padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
-        .hidden { display: none !important; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>JAMB CBT Pro</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --bg:      #f0f4f8;
+      --card:    #ffffff;
+      --text:    #1a2a3a;
+      --muted:   #8898aa;
+      --accent:  #007bff;
+      --nav:     #ffffff;
+      --border:  #e2e8f0;
+      --correct: #28a745;
+      --wrong:   #dc3545;
+      --warn:    #ff9f0a;
+      --radius:  18px;
+      --shadow:  0 2px 16px rgba(0,0,0,0.06);
+    }
+    [data-theme="dark"] {
+      --bg:     #0d1117;
+      --card:   #161b22;
+      --text:   #c9d1d9;
+      --muted:  #6e7681;
+      --accent: #58a6ff;
+      --nav:    #161b22;
+      --border: #30363d;
+    }
 
-        /* Navigation */
-        .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: var(--nav); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
-        .nav-item { cursor: pointer; text-align: center; font-size: 11px; opacity: 0.4; flex: 1; color: var(--text); transition: 0.2s; }
-        .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+    body { margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: background .3s, color .3s; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* Buttons */
-        .primary-btn { width: 100%; padding: 16px; border: none; border-radius: 16px; background: var(--accent); color: white; font-weight: 700; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
-        .primary-btn:active { transform: scale(0.97); }
-        input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); margin-bottom: 15px; font-size: 15px; }
+    /* ── Layout ── */
+    #app { width: 100%; max-width: 480px; margin: auto; padding: 16px; }
 
-        /* Loading UI */
-        .prog-outer { width: 100%; background: rgba(0,123,255,0.1); height: 32px; border-radius: 16px; margin: 20px 0; overflow: hidden; border: 1px solid var(--border); }
-        #prog-bar { width: 0%; height: 100%; background: var(--accent); transition: 0.4s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 900; }
+    /* ── Card ── */
+    .card { background: var(--card); padding: 22px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 18px; border: 1px solid var(--border); }
 
-        /* History */
-        .history-item { background: var(--card); padding: 16px; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .history-score-blob { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; font-size: 14px; }
+    /* ── Header ── */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .top-bar h2 { margin: 0; font-size: 20px; font-weight: 800; }
+    .icon-btn { cursor: pointer; padding: 8px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
 
-        /* Question UI */
-        #question-box { background: rgba(0,123,255,0.03); padding: 22px; border-radius: 20px; border-left: 6px solid var(--accent); margin-bottom: 20px; line-height: 1.6; font-size: 16px; }
-        .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 12px; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; transition: 0.2s; font-size: 15px; display: flex; align-items: center; gap: 12px; }
-        .opt-letter { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
-        .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,0.05); }
-        .opt-btn.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
+    /* ── Nav ── */
+    .nav-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--nav); display: flex; border-top: 1px solid var(--border); z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+    .nav-item { cursor: pointer; text-align: center; font-size: 11px; font-weight: 600; opacity: .4; flex: 1; color: var(--text); transition: .2s; padding: 12px 0 10px; }
+    .nav-item.active { opacity: 1; color: var(--accent); }
+    .nav-item i { display: block; margin: 0 auto 3px; }
 
-        /* Grid */
-        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; max-height: 280px; overflow-y: auto; padding: 5px; }
-        .sub-chip { padding: 14px; border: 2px solid var(--accent); border-radius: 16px; text-align: center; cursor: pointer; font-size: 13px; background: var(--card); font-weight: 600; }
-        .sub-chip.selected { background: var(--accent); color: white; }
+    /* ── Utility ── */
+    .hidden { display: none !important; }
 
-        .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 20px; max-height: 140px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 16px; border: 1px solid var(--border); }
-        .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); }
-        .q-num.answered { background: var(--accent); color: white; }
-        .q-num.current { border: 2.5px solid var(--accent); font-weight: 900; }
-        .q-num.rev-correct { background: var(--correct); color: white; }
-        .q-num.rev-wrong { background: var(--wrong); color: white; }
+    /* ── Stats grid ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .stat-box { background: rgba(0,123,255,.07); padding: 18px; border-radius: 14px; text-align: center; }
+    .stat-label { font-size: 10px; font-weight: 700; letter-spacing: .06em; opacity: .55; display: block; margin-bottom: 4px; text-transform: uppercase; }
+    .stat-val { font-size: 24px; font-weight: 800; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { width: 100%; max-width: 350px; background: var(--card); border-radius: 28px; padding: 25px; color: var(--text); border: 1px solid var(--border); text-align: center; }
+    /* ── Section row ── */
+    .section-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 8px; }
 
-        .sample-chip { display: inline-block; padding: 10px 16px; background: rgba(0,123,255,0.1); border: 1.5px solid var(--accent); border-radius: 30px; font-size: 12px; margin: 5px 2px; cursor: pointer; color: var(--accent); font-weight: 700; transition: 0.2s; }
-    </style>
+    /* ── History ── */
+    .history-item { background: var(--card); padding: 14px 16px; border-radius: 14px; margin-bottom: 10px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; gap: 14px; transition: .15s; }
+    .history-item:active { transform: scale(.98); }
+    .score-blob { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; flex-shrink: 0; font-size: 13px; }
+    .history-meta { flex: 1; }
+    .history-date { font-weight: 800; font-size: 13px; }
+    .history-tags { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .empty-state { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 13px; }
+
+    /* ── Buttons ── */
+    .btn { width: 100%; padding: 15px; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: .15s; }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-danger  { background: var(--wrong); color: white; }
+    .btn-neutral { background: #6c757d; color: white; }
+    .btn-success { background: var(--correct); color: white; }
+    .btn-whatsapp { background: #25D366; color: white; }
+    .btn-ghost { background: transparent; border: none; color: var(--wrong); font-size: 11px; font-weight: 700; cursor: pointer; padding: 0; }
+
+    /* ── Inputs ── */
+    input[type=text], textarea {
+      width: 100%; padding: 14px 16px; border-radius: 12px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      color: var(--text); margin-bottom: 14px; font-size: 14px;
+      transition: border-color .2s;
+    }
+    input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+    textarea { min-height: 110px; resize: vertical; }
+
+    /* ── Progress bar ── */
+    .prog-outer { width: 100%; background: rgba(0,123,255,.1); height: 30px; border-radius: 15px; margin: 18px 0; overflow: hidden; border: 1px solid var(--border); }
+    #prog-bar { width: 0%; height: 100%; background: var(--accent); transition: width .35s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 800; }
+    #countdown-sync { font-size: 44px; font-weight: 900; color: var(--accent); text-align: center; min-height: 60px; line-height: 1; }
+
+    /* ── Subject grid ── */
+    .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; max-height: 280px; overflow-y: auto; padding: 2px; }
+    .sub-chip { padding: 13px 10px; border: 2px solid var(--border); border-radius: 14px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; transition: .15s; }
+    .sub-chip.selected { border-color: var(--accent); background: rgba(0,123,255,.08); color: var(--accent); }
+
+    /* ── Exam ── */
+    .exam-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    #exam-timer { color: var(--wrong); font-weight: 900; font-family: monospace; font-size: 22px; }
+    .sub-tabs-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 14px; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+    .sub-tabs-bar::-webkit-scrollbar { display: none; }
+    .sub-tab { padding: 7px 16px; font-size: 11px; font-weight: 700; border: none; border-radius: 20px; cursor: pointer; white-space: nowrap; transition: .15s; }
+    .sub-tab.active { background: var(--accent); color: white; }
+    .sub-tab:not(.active) { background: var(--border); color: var(--muted); }
+
+    .q-meta { margin-top: 14px; display: flex; justify-content: space-between; font-weight: 700; font-size: 12px; margin-bottom: 14px; }
+    .q-meta-sub { color: var(--accent); }
+    .q-meta-prog { color: var(--muted); }
+
+    #question-box { background: rgba(0,123,255,.04); padding: 18px; border-radius: 14px; border-left: 5px solid var(--accent); margin-bottom: 18px; line-height: 1.7; font-size: 15px; }
+
+    .opt-btn { background: var(--card); border: 1.5px solid var(--border); color: var(--text); text-align: left; margin-bottom: 10px; width: 100%; padding: 14px 16px; border-radius: 14px; cursor: pointer; transition: .15s; font-size: 14px; display: flex; align-items: center; gap: 12px; }
+    .opt-btn:active { transform: scale(.99); }
+    .opt-btn.selected { border-color: var(--accent); background: rgba(0,123,255,.05); }
+    .opt-letter { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; flex-shrink: 0; }
+    .opt-btn.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .nav-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .nav-btns .btn { flex: 1; }
+
+    /* ── Q number grid ── */
+    .q-nav-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-top: 18px; max-height: 130px; overflow-y: auto; padding: 10px; background: rgba(0,0,0,.03); border-radius: 14px; border: 1px solid var(--border); }
+    .q-num { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--card); transition: .1s; }
+    .q-num.answered   { background: var(--accent); color: white; border-color: var(--accent); }
+    .q-num.current    { border: 2.5px solid var(--accent); font-weight: 900; }
+    .q-num.rev-correct{ background: var(--correct); color: white; border-color: var(--correct); }
+    .q-num.rev-wrong  { background: var(--wrong);   color: white; border-color: var(--wrong); }
+
+    /* ── Result ── */
+    .result-center { text-align: center; }
+    .result-score { font-size: 52px; font-weight: 900; color: var(--correct); margin: 8px 0; line-height: 1; }
+    .result-label { color: var(--muted); font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+    .breakdown-box { background: rgba(0,0,0,.04); padding: 14px; border-radius: 12px; font-size: 13px; text-align: left; font-family: inherit; margin-bottom: 20px; white-space: pre-wrap; line-height: 2; }
+
+    /* ── Feedback chips ── */
+    .chip-row { margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .sample-chip { padding: 9px 14px; background: rgba(0,123,255,.08); border: 1.5px solid var(--accent); border-radius: 20px; font-size: 11px; cursor: pointer; color: var(--accent); font-weight: 700; transition: .15s; }
+    .sample-chip:active { background: var(--accent); color: white; }
+
+    /* ── Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); backdrop-filter: blur(5px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .modal-card { width: 100%; max-width: 340px; background: var(--card); border-radius: 24px; padding: 24px; color: var(--text); border: 1px solid var(--border); text-align: center; }
+    .modal-card h3 { margin: 0 0 18px; font-size: 17px; }
+    .modal-card .btn + .btn { margin-top: 10px; }
+
+    /* ── Calculator ── */
+    #calc-modal { background: #1c1c1e; border-radius: 24px; padding: 20px; max-width: 290px; }
+    .calc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .calc-label { font-size: 10px; color: rgba(255,255,255,.4); font-weight: 700; letter-spacing: .08em; }
+    .calc-close { background: #ff3b30; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 13px; border: none; }
+    #calc-display { width: 100%; height: 58px; background: #000; color: #fff; border: none; text-align: right; padding: 12px 16px; font-size: 28px; margin-bottom: 14px; border-radius: 12px; font-family: monospace; }
+    .calc-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 9px; }
+    .calc-btn { padding: 16px; border-radius: 50%; border: none; cursor: pointer; font-size: 16px; font-weight: 700; color: white; }
+    .calc-btn.op  { background: #ff9f0a; }
+    .calc-btn.num { background: #3a3a3c; }
+    .calc-btn.fn  { background: #636366; }
+  </style>
 </head>
 <body data-theme="light">
 
-<div id="app-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h2 id="header-title" style="margin:0; font-weight: 800;">Home</h2>
-        <div onclick="toggleTheme()" style="cursor:pointer; padding: 6px;"><i data-lucide="moon" id="theme-icon"></i></div>
+<div id="app">
+  <!-- Header -->
+  <div class="top-bar">
+    <h2 id="header-title">Home</h2>
+    <div class="icon-btn" onclick="toggleTheme()"><i data-lucide="moon" id="theme-icon" style="width:18px;height:18px;"></i></div>
+  </div>
+
+  <!-- ── HOME ── -->
+  <div id="tab-home">
+    <div class="card">
+      <p style="margin:0 0 4px; font-size:12px; color:var(--muted); font-weight:700;">WELCOME BACK</p>
+      <h3 style="margin:0 0 20px; font-size:20px;">Hello, <span id="user-display-name" style="color:var(--accent);">Student</span> 👋</h3>
+
+      <div class="stat-grid">
+        <div class="stat-box">
+          <span class="stat-label">Sessions</span>
+          <span class="stat-val" id="stat-sessions">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Best Score</span>
+          <span class="stat-val" id="stat-best" style="font-size:18px;">0 / 400</span>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <span class="section-title"><i data-lucide="history" style="width:15px;"></i> Recent Activity</span>
+        <button id="clear-data-btn" class="hidden btn-ghost" onclick="showClearModal()">Clear All</button>
+      </div>
+      <div id="history-box"></div>
+    </div>
+  </div>
+
+  <!-- ── PRACTICE ── -->
+  <div id="tab-practice" class="hidden">
+
+    <!-- Login -->
+    <div id="login-screen" class="card">
+      <h3 style="margin:0 0 18px;">CBT Portal</h3>
+      <input type="text" id="username-in" placeholder="Enter your full name">
+      <button class="btn btn-primary" onclick="saveName()"><i data-lucide="log-in" style="width:16px;"></i> Log In</button>
     </div>
 
-    <div id="tab-home">
-        <div class="card">
-            <h3 style="margin-top:0;">HELLO, <span id="user-display-name" style="color: var(--accent);">STUDENT</span></h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin: 25px 0;">
-                <div style="background:rgba(0,123,255,0.07); padding:18px; border-radius:20px; text-align:center;">
-                    <span style="font-size:11px; opacity:0.6; display:block; font-weight:bold;">SESSIONS</span>
-                    <b id="stat-sessions" style="font-size:24px;">0</b>
-                </div>
-                <div style="background:rgba(0,123,255,0.07); padding:18px; border-radius:20px; text-align:center;">
-                    <span style="font-size:11px; opacity:0.6; display:block; font-weight:bold;">BEST SCORE</span>
-                    <b id="stat-best" style="font-size:20px;">0 / 400</b>
-                </div>
-            </div>
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <p style="font-weight:800; font-size:14px; margin:0; display:flex; align-items:center; gap:8px;"><i data-lucide="history" style="width:18px;"></i> Recent Activity</p>
-                <button id="clear-data-btn" class="hidden" onclick="showClearModal()" style="background:transparent; border:none; color:#dc3545; font-size:11px; font-weight:bold; cursor:pointer;">Clear All</button>
-            </div>
-            <div id="history-box"></div>
-        </div>
+    <!-- Subject Select -->
+    <div id="setup-screen" class="card hidden">
+      <h3 style="margin:0 0 6px;">Select Subjects</h3>
+      <p style="margin:0 0 16px; font-size:12px; color:var(--muted);">Choose up to 4 subjects for your session</p>
+      <div class="sub-grid" id="sub-list-setup"></div>
+      <button class="btn btn-primary" onclick="syncQuestions()"><i data-lucide="zap" style="width:16px;"></i> Generate Session</button>
     </div>
 
-    <div id="tab-practice" class="hidden">
-        <div id="login-screen" class="card">
-            <h3>CBT Portal</h3>
-            <input type="text" id="username-in" placeholder="Full Name">
-            <button class="primary-btn" onclick="saveName()">Log In <i data-lucide="log-in"></i></button>
-        </div>
-
-        <div id="setup-screen" class="card hidden">
-            <h3>Select Subjects</h3>
-            <div class="sub-grid" id="sub-list-setup"></div>
-            <button class="primary-btn" onclick="syncQuestions()">GENERATE SESSION <i data-lucide="zap"></i></button>
-        </div>
-
-        <div id="loading-screen" class="card hidden" style="text-align: center;">
-            <h3 id="loader-status">Fetching Data...</h3>
-            <div class="prog-outer"><div id="prog-bar">0%</div></div>
-            <div id="countdown-sync" style="font-size: 40px; font-weight: 900; color: var(--accent);"></div>
-        </div>
-
-        <div id="exam-screen" class="card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:20px;">
-                <div id="exam-timer" style="color:#dc3545; font-weight:900; font-family:monospace; font-size:22px;">120:00</div>
-                <div onclick="toggleCalc()" style="cursor:pointer; color:var(--accent);"><i data-lucide="calculator"></i></div>
-            </div>
-            <div id="sub-tabs-bar" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:15px; border-bottom: 1px solid var(--border);"></div>
-            <div id="q-meta" style="margin-top:15px; display: flex; justify-content: space-between; font-weight: 800; font-size: 13px;">
-                <span id="q-sub-title" style="color: var(--accent);">Subject</span>
-                <span id="q-progress-text">0 / 40 Answered</span>
-            </div>
-            <div id="question-box"></div>
-            <div id="options-box"></div>
-            <div style="display: flex; gap: 12px; margin-top:25px;">
-                <button onclick="prevQ()" style="background:#6c757d; color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Back</button>
-                <button onclick="nextQ()" style="background:var(--accent); color:white; border:none; flex:1; padding:15px; border-radius:14px; font-weight:bold;">Next</button>
-            </div>
-            <div class="q-nav-grid" id="q-nav-grid"></div>
-            <button id="final-submit-trigger" onclick="showSubmitModal()" style="background:#dc3545; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800;">Submit All Subjects</button>
-            <button id="exit-review-btn" onclick="location.reload()" class="hidden" style="background:#28a745; color:white; border:none; width:100%; padding:16px; border-radius:16px; margin-top:25px; font-weight:800;">Close Review</button>
-        </div>
-
-        <div id="result-screen" class="card hidden" style="text-align:center;">
-            <p style="font-weight:bold; opacity:0.6;">Aggregate Score</p>
-            <h1 id="final-percent" style="font-size: 55px; color: #28a745; margin: 10px 0;">0 / 400</h1>
-            <div id="breakdown-list" style="margin-bottom: 25px; text-align: left; font-size: 14px;"></div>
-            <button onclick="startReview()" style="background:#6c757d; color:white; border:none; padding:16px; border-radius:14px; width:100%; margin-bottom: 10px; font-weight:bold;">Review Mistakes</button>
-            <button onclick="location.reload()" style="background:#28a745; color:white; border:none; padding:16px; border-radius:14px; width:100%; font-weight:bold;">Dashboard Home</button>
-        </div>
+    <!-- Loading -->
+    <div id="loading-screen" class="card hidden" style="text-align:center;">
+      <p style="margin:0 0 4px; font-size:12px; color:var(--muted); font-weight:700; letter-spacing:.06em;">PLEASE WAIT</p>
+      <h3 id="loader-status" style="margin:0 0 0;">Fetching Questions...</h3>
+      <div class="prog-outer"><div id="prog-bar">0%</div></div>
+      <div id="loading-subjects" style="font-size:12px; color:var(--muted); margin-bottom:12px;"></div>
+      <div id="countdown-sync"></div>
     </div>
 
-    <div id="tab-ideas" class="hidden">
-        <div class="card">
-            <h3>Do you have a feedback</h3>
-            <div style="margin-bottom:15px;">
-                <div class="sample-chip" onclick="fillIdea('Add more 2026 practice questions')">Add 2026 Qs</div>
-                <div class="sample-chip" onclick="fillIdea('The calculator is a bit slow')">Fix Calc</div>
-                <div class="sample-chip" onclick="fillIdea('I love the UI design')">Review App</div>
-            </div>
-            <textarea id="idea-msg" placeholder="Write your feedback here..."></textarea>
-            <button class="primary-btn" onclick="sendIdea()" style="background:#25D366;"><i data-lucide="send"></i> Send WhatsApp</button>
-        </div>
+    <!-- Exam -->
+    <div id="exam-screen" class="card hidden">
+      <div class="exam-header">
+        <div id="exam-timer">120:00</div>
+        <div class="icon-btn" onclick="toggleCalc()" title="Calculator"><i data-lucide="calculator" style="width:18px;height:18px;"></i></div>
+      </div>
+      <div class="sub-tabs-bar" id="sub-tabs-bar"></div>
+      <div class="q-meta">
+        <span class="q-meta-sub" id="q-sub-title">Subject</span>
+        <span class="q-meta-prog" id="q-progress-text">0 / 40 Answered</span>
+      </div>
+      <div id="question-box"></div>
+      <div id="options-box"></div>
+      <div class="nav-btns">
+        <button class="btn btn-neutral" onclick="prevQ()">← Back</button>
+        <button class="btn btn-primary" onclick="nextQ()">Next →</button>
+      </div>
+      <div class="q-nav-grid" id="q-nav-grid"></div>
+      <button id="final-submit-trigger" class="btn btn-danger" onclick="showSubmitModal()" style="margin-top:20px;">Submit All Subjects</button>
+      <button id="exit-review-btn" class="btn btn-success hidden" onclick="location.reload()" style="margin-top:20px;">Close Review</button>
     </div>
+
+    <!-- Result -->
+    <div id="result-screen" class="card hidden result-center">
+      <p style="margin:0; font-size:12px; color:var(--muted); font-weight:700;">AGGREGATE SCORE</p>
+      <div class="result-score" id="final-percent">0 / 400</div>
+      <p class="result-label">JAMB Mock Result</p>
+      <div class="breakdown-box" id="breakdown-list"></div>
+      <button class="btn btn-neutral" onclick="startReview()" style="margin-bottom:10px;">Review Mistakes</button>
+      <button class="btn btn-success" onclick="location.reload()">Back to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- ── IDEAS ── -->
+  <div id="tab-ideas" class="hidden">
+    <div class="card">
+      <h3 style="margin:0 0 6px;">Send Feedback</h3>
+      <p style="margin:0 0 16px; font-size:12px; color:var(--muted);">We'd love to hear from you</p>
+      <div class="chip-row">
+        <div class="sample-chip" onclick="fillIdea('Add more 2026 practice questions')">Add 2026 Qs</div>
+        <div class="sample-chip" onclick="fillIdea('The calculator is a bit slow')">Fix Calc</div>
+        <div class="sample-chip" onclick="fillIdea('I love the UI design')">Review App</div>
+      </div>
+      <textarea id="idea-msg" placeholder="Write your feedback here..."></textarea>
+      <button class="btn btn-whatsapp" onclick="sendIdea()"><i data-lucide="send" style="width:16px;"></i> Send via WhatsApp</button>
+    </div>
+  </div>
 </div>
 
+<!-- ── Modals ── -->
 <div id="modal-container" class="modal-overlay hidden">
-    <div id="calc-modal" class="modal-card hidden" style="background: #1c1c1e; width: 290px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; color: white;">
-            <span style="font-size:10px; opacity:0.5; font-weight:bold;">JAMB VIBE CALC</span>
-            <div onclick="closeModals()" style="background:#ff3b30; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer;">âœ•</div>
-        </div>
-        <input type="text" id="calc-display" style="width:100%; height:60px; background:#000; color:#fff; border:none; text-align:right; padding:15px; font-size:28px; margin-bottom:18px; border-radius:12px; font-family:monospace;" readonly value="0">
-        <div class="calc-btns" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
-            <button onclick="cClr()" style="padding:15px; background:#3a3a3c; border-radius:50%; color:white; border:none;">C</button><button onclick="cPress('/')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">Ã·</button><button onclick="cPress('*')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">Ã—</button><button onclick="cPress('-')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">âˆ’</button>
-            <button onclick="cPress('7')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">7</button><button onclick="cPress('8')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">8</button><button onclick="cPress('9')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">9</button><button onclick="cPress('+')" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">+</button>
-            <button onclick="cPress('4')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">4</button><button onclick="cPress('5')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">5</button><button onclick="cPress('6')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">6</button><button onclick="cSolve()" style="background:#ff9f0a; border-radius:50%; color:white; border:none;">=</button>
-            <button onclick="cPress('1')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">1</button><button onclick="cPress('2')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">2</button><button onclick="cPress('3')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">3</button><button onclick="cPress('0')" style="background:#3a3a3c; border-radius:50%; color:white; border:none;">0</button>
-        </div>
+  <!-- Calculator -->
+  <div id="calc-modal" class="hidden">
+    <div class="calc-top">
+      <span class="calc-label">CALCULATOR</span>
+      <button class="calc-close" onclick="closeModals()">✕</button>
     </div>
+    <input type="text" id="calc-display" readonly value="0">
+    <div class="calc-grid">
+      <button class="calc-btn fn" onclick="cClr()">C</button>
+      <button class="calc-btn op" onclick="cPress('/')">÷</button>
+      <button class="calc-btn op" onclick="cPress('*')">×</button>
+      <button class="calc-btn op" onclick="cPress('-')">−</button>
+      <button class="calc-btn num" onclick="cPress('7')">7</button>
+      <button class="calc-btn num" onclick="cPress('8')">8</button>
+      <button class="calc-btn num" onclick="cPress('9')">9</button>
+      <button class="calc-btn op" onclick="cPress('+')">+</button>
+      <button class="calc-btn num" onclick="cPress('4')">4</button>
+      <button class="calc-btn num" onclick="cPress('5')">5</button>
+      <button class="calc-btn num" onclick="cPress('6')">6</button>
+      <button class="calc-btn op" onclick="cSolve()">=</button>
+      <button class="calc-btn num" onclick="cPress('1')">1</button>
+      <button class="calc-btn num" onclick="cPress('2')">2</button>
+      <button class="calc-btn num" onclick="cPress('3')">3</button>
+      <button class="calc-btn num" onclick="cPress('0')">0</button>
+    </div>
+  </div>
 
-    <div id="submit-modal" class="modal-card hidden">
-        <h3 style="margin:0 0 10px;">Submit Exam?</h3>
-        <button class="primary-btn" onclick="submitCBT()" style="background:#dc3545; margin-bottom:10px;">Yes, Submit</button>
-        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Back</button>
-    </div>
+  <!-- Submit confirm -->
+  <div id="submit-modal" class="modal-card hidden">
+    <h3>Submit Exam?</h3>
+    <p style="color:var(--muted); font-size:13px; margin:-8px 0 18px;">This will end your session and calculate your score.</p>
+    <button class="btn btn-danger" onclick="submitCBT()">Yes, Submit</button>
+    <button class="btn btn-neutral" onclick="closeModals()" style="margin-top:10px;">Go Back</button>
+  </div>
 
-    <div id="receipt-modal" class="modal-card hidden">
-        <h3 style="margin-top:0; color:var(--accent);">Report Card</h3>
-        <hr style="opacity:0.1; margin: 15px 0;">
-        <div id="detail-content" style="font-weight: 600; line-height: 2; text-align: left; font-size: 14px;"></div>
-        <button onclick="closeModals()" class="primary-btn" style="margin-top: 20px;">Close</button>
-    </div>
+  <!-- History receipt -->
+  <div id="receipt-modal" class="modal-card hidden">
+    <h3 style="color:var(--accent);">Report Card</h3>
+    <hr style="opacity:.1; margin:0 0 16px;">
+    <div id="detail-content" style="font-size:13px; line-height:2; text-align:left; white-space:pre-wrap;"></div>
+    <button class="btn btn-primary" onclick="closeModals()" style="margin-top:18px;">Close</button>
+  </div>
 
-    <div id="clear-modal" class="modal-card hidden">
-        <h3 style="margin:0 0 10px;">Clear Everything?</h3>
-        <button class="primary-btn" onclick="performClear()" style="background:#dc3545; margin-bottom:10px;">Yes, Clear</button>
-        <button class="primary-btn" onclick="closeModals()" style="background:#6c757d;">Cancel</button>
-    </div>
+  <!-- Clear confirm -->
+  <div id="clear-modal" class="modal-card hidden">
+    <h3>Clear All Data?</h3>
+    <p style="color:var(--muted); font-size:13px; margin:-8px 0 18px;">This will erase your history and stats permanently.</p>
+    <button class="btn btn-danger" onclick="performClear()">Yes, Clear</button>
+    <button class="btn btn-neutral" onclick="closeModals()" style="margin-top:10px;">Cancel</button>
+  </div>
 </div>
 
-<div class="nav-bar">
-    <div class="nav-item active" onclick="switchTab('home', this)"><i data-lucide="home"></i><br>Home</div>
-    <div class="nav-item" onclick="switchTab('practice', this)"><i data-lucide="pencil"></i><br>Practice</div>
-    <div class="nav-item" onclick="switchTab('ideas', this)"><i data-lucide="lightbulb"></i><br>Ideas</div>
-</div>
+<!-- ── Nav ── -->
+<nav class="nav-bar">
+  <div class="nav-item active" onclick="switchTab('home', this)">
+    <i data-lucide="home" style="width:20px;height:20px;"></i>Home
+  </div>
+  <div class="nav-item" onclick="switchTab('practice', this)">
+    <i data-lucide="pencil" style="width:20px;height:20px;"></i>Practice
+  </div>
+  <div class="nav-item" onclick="switchTab('ideas', this)">
+    <i data-lucide="lightbulb" style="width:20px;height:20px;"></i>Ideas
+  </div>
+</nav>
 
 <script>
-    const KEY = "ALOC-37270319fe62227b783f";
-    const SUBS = ["English", "Mathematics", "Physics", "Chemistry", "Biology", "Economics", "Government", "Literature", "Commerce", "Geography", "History", "Civic Education", "CRS", "IRS", "Accounting", "French", "Arabic", "Yoruba", "Igbo", "Hausa"];
-    
-    let db = JSON.parse(localStorage.getItem('vibe_master_db')) || { name: "", sessions: 0, best: 0, history: [] };
-    let eData = {}, uAns = {}, selected = [], active = "", currIdx = 0, isReview = false;
-    let mainTimer;
+  const KEY  = "ALOC-37270319fe62227b783f";
+  const SUBS = ["English","Mathematics","Physics","Chemistry","Biology","Economics","Government","Literature","Commerce","Geography","History","Civic Education","CRS","IRS","Accounting","French","Arabic","Yoruba","Igbo","Hausa"];
 
-    function refresh() {
-        document.getElementById('user-display-name').innerText = (db.name || "Student").toUpperCase();
-        document.getElementById('stat-sessions').innerText = db.sessions;
-        document.getElementById('stat-best').innerText = db.best + " / 400";
-        const hBox = document.getElementById('history-box');
-        const clr = document.getElementById('clear-data-btn');
-        if (db.history.length > 0) { hBox.innerHTML = ""; clr.classList.remove('hidden'); } 
-        else { hBox.innerHTML = "<div style='text-align:center; padding:30px; opacity:0.4;'><i data-lucide='folder-open'></i><br>No sessions yet.</div>"; clr.classList.add('hidden'); }
-        db.history.slice().reverse().forEach(h => {
-            const color = h.score >= 280 ? "var(--correct)" : (h.score >= 180 ? "var(--warn)" : "var(--wrong)");
-            const d = document.createElement('div');
-            d.className = 'history-item';
-            d.innerHTML = `<div class="history-score-blob" style="background:${color}">${h.score}</div><div style="flex:1;"><div style="font-weight:900; font-size:14px;">${h.date}</div><div style="font-size:10px; opacity:0.6;">${h.subjectTags}</div></div><i data-lucide='chevron-right' style='opacity:0.2; width:16px;'></i>`;
-            d.onclick = () => { document.getElementById('detail-content').innerText = h.detail; document.getElementById('modal-container').classList.remove('hidden'); document.getElementById('receipt-modal').classList.remove('hidden'); lucide.createIcons(); };
-            hBox.appendChild(d);
-        });
-        localStorage.setItem('vibe_master_db', JSON.stringify(db));
-        lucide.createIcons();
-    }
-    refresh();
+  let db = JSON.parse(localStorage.getItem('vibe_master_db')) || { name:"", sessions:0, best:0, history:[] };
+  let eData = {}, uAns = {}, selected = [], active = "", currIdx = 0, isReview = false, mainTimer;
 
-    function showClearModal() { document.getElementById('modal-container').classList.remove('hidden'); document.getElementById('clear-modal').classList.remove('hidden'); lucide.createIcons(); }
-    function performClear() { db.history = []; db.best = 0; db.sessions = 0; closeModals(); refresh(); }
-    function showSubmitModal() { document.getElementById('modal-container').classList.remove('hidden'); document.getElementById('submit-modal').classList.remove('hidden'); lucide.createIcons(); }
-    function closeModals() { document.querySelectorAll('.modal-overlay, .modal-card').forEach(m => m.classList.add('hidden')); }
-    function toggleCalc() { document.getElementById('modal-container').classList.toggle('hidden'); document.getElementById('calc-modal').classList.toggle('hidden'); }
+  /* ── Refresh home ── */
+  function refresh() {
+    document.getElementById('user-display-name').innerText = (db.name || "Student");
+    document.getElementById('stat-sessions').innerText = db.sessions;
+    document.getElementById('stat-best').innerText = db.best + " / 400";
 
-    function switchTab(t, el) {
-        ['home', 'practice', 'ideas'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
-        document.getElementById('tab-'+t).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('header-title').innerText = t.charAt(0).toUpperCase() + t.slice(1);
-    }
+    const hBox = document.getElementById('history-box');
+    const clrBtn = document.getElementById('clear-data-btn');
 
-    function toggleTheme() { document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; lucide.createIcons(); }
-
-    function saveName() {
-        const n = document.getElementById('username-in').value.trim();
-        if(!n) return alert("Enter name!");
-        db.name = n; refresh();
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('setup-screen').classList.remove('hidden');
-    }
-
-    const gridSetup = document.getElementById('sub-list-setup');
-    SUBS.forEach(s => {
-        const c = document.createElement('div');
-        c.className = 'sub-chip'; c.innerText = s;
-        c.onclick = () => {
-            if(selected.includes(s)) { selected = selected.filter(x => x!==s); c.classList.remove('selected'); }
-            else if(selected.length < 4) { selected.push(s); c.classList.add('selected'); }
+    if (!db.history.length) {
+      hBox.innerHTML = `<div class="empty-state"><i data-lucide="folder-open" style="width:28px;height:28px;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"></i>No sessions yet. Start practising!</div>`;
+      clrBtn.classList.add('hidden');
+    } else {
+      hBox.innerHTML = "";
+      clrBtn.classList.remove('hidden');
+      db.history.slice().reverse().forEach(h => {
+        const color = h.score >= 280 ? "var(--correct)" : h.score >= 180 ? "var(--warn)" : "var(--wrong)";
+        const d = document.createElement('div');
+        d.className = 'history-item';
+        d.innerHTML = `
+          <div class="score-blob" style="background:${color}">${h.score}</div>
+          <div class="history-meta">
+            <div class="history-date">${h.date}</div>
+            <div class="history-tags">${h.subjectTags}</div>
+          </div>
+          <i data-lucide="chevron-right" style="width:16px;opacity:.25;"></i>`;
+        d.onclick = () => {
+          document.getElementById('detail-content').innerText = h.detail;
+          document.getElementById('modal-container').classList.remove('hidden');
+          document.getElementById('receipt-modal').classList.remove('hidden');
+          lucide.createIcons();
         };
-        gridSetup.appendChild(c);
+        hBox.appendChild(d);
+      });
+    }
+    localStorage.setItem('vibe_master_db', JSON.stringify(db));
+    lucide.createIcons();
+  }
+  refresh();
+
+  /* ── Modals ── */
+  function showClearModal()  { openModal('clear-modal'); }
+  function showSubmitModal() { openModal('submit-modal'); }
+  function openModal(id) {
+    document.getElementById('modal-container').classList.remove('hidden');
+    document.getElementById(id).classList.remove('hidden');
+    lucide.createIcons();
+  }
+  function closeModals() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+    document.querySelectorAll('.modal-card, #calc-modal').forEach(m => m.classList.add('hidden'));
+  }
+  function toggleCalc() {
+    document.getElementById('modal-container').classList.toggle('hidden');
+    document.getElementById('calc-modal').classList.toggle('hidden');
+  }
+  function performClear() { db.history = []; db.best = 0; db.sessions = 0; closeModals(); refresh(); }
+
+  /* ── Tabs ── */
+  function switchTab(t, el) {
+    ['home','practice','ideas'].forEach(x => document.getElementById('tab-'+x).classList.add('hidden'));
+    document.getElementById('tab-'+t).classList.remove('hidden');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('header-title').innerText = { home:'Home', practice:'Practice', ideas:'Ideas' }[t];
+  }
+
+  /* ── Theme ── */
+  function toggleTheme() {
+    document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+    const icon = document.body.dataset.theme === 'dark' ? 'sun' : 'moon';
+    document.getElementById('theme-icon').setAttribute('data-lucide', icon);
+    lucide.createIcons();
+  }
+
+  /* ── Login / Name ── */
+  function saveName() {
+    const n = document.getElementById('username-in').value.trim();
+    if (!n) return alert("Please enter your name.");
+    db.name = n; refresh();
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('setup-screen').classList.remove('hidden');
+  }
+
+  /* ── Subject chips ── */
+  const gridSetup = document.getElementById('sub-list-setup');
+  SUBS.forEach(s => {
+    const c = document.createElement('div');
+    c.className = 'sub-chip';
+    c.innerText = s;
+    c.onclick = () => {
+      if (selected.includes(s)) { selected = selected.filter(x => x !== s); c.classList.remove('selected'); }
+      else if (selected.length < 4) { selected.push(s); c.classList.add('selected'); }
+    };
+    gridSetup.appendChild(c);
+  });
+
+  /* ── Parallel fetch (faster!) ── */
+  async function syncQuestions() {
+    if (!selected.length) return alert("Please select at least one subject.");
+    document.getElementById('setup-screen').classList.add('hidden');
+    document.getElementById('loading-screen').classList.remove('hidden');
+
+    const bar = document.getElementById('prog-bar');
+    const statusEl = document.getElementById('loader-status');
+    const subsEl   = document.getElementById('loading-subjects');
+
+    let completed = 0;
+    subsEl.innerText = `Loading: ${selected.join(', ')}`;
+
+    try {
+      /* All requests fire at the same time */
+      const results = await Promise.all(
+        selected.map(async s => {
+          const res  = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, {
+            headers: { 'AccessToken': KEY }
+          });
+          const json = await res.json();
+          const data = (json.data || []).slice(0, 40).map(q => ({
+            q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
+            opts: [q.option.a, q.option.b, q.option.c, q.option.d],
+            ans: ["a","b","c","d"].indexOf((q.answer || "").toLowerCase().trim())
+          }));
+          completed++;
+          const pct = Math.round((completed / selected.length) * 100);
+          bar.style.width = pct + "%";
+          bar.innerText = pct + "%";
+          return { s, data };
+        })
+      );
+
+      results.forEach(({ s, data }) => { eData[s] = data; uAns[s] = {}; });
+
+      statusEl.innerText = "Almost Ready!";
+      subsEl.innerText = "";
+      let t = 3;
+      const cd = setInterval(() => {
+        document.getElementById('countdown-sync').innerText = t;
+        t--;
+        if (t < 0) {
+          clearInterval(cd);
+          active = selected[0];
+          document.getElementById('loading-screen').classList.add('hidden');
+          document.getElementById('exam-screen').classList.remove('hidden');
+          renderTabs(); loadQ(); startTimer();
+        }
+      }, 1000);
+
+    } catch(e) {
+      alert("Network error. Please check your connection and try again.");
+      location.reload();
+    }
+  }
+
+  /* ── Render subject tabs ── */
+  function renderTabs() {
+    const c = document.getElementById('sub-tabs-bar'); c.innerHTML = "";
+    selected.forEach(s => {
+      const b = document.createElement('button');
+      b.className = `sub-tab ${s === active ? 'active' : ''}`;
+      b.innerText = s;
+      b.onclick = () => { active = s; currIdx = 0; renderTabs(); loadQ(); };
+      c.appendChild(b);
+    });
+  }
+
+  /* ── Load question ── */
+  function loadQ() {
+    const q = eData[active][currIdx];
+    document.getElementById('q-sub-title').innerText = active;
+    document.getElementById('q-progress-text').innerText = `${Object.keys(uAns[active]).length} / 40 Answered`;
+    document.getElementById('question-box').innerHTML = `<b>Q${currIdx+1}.</b> ${q.q}`;
+
+    const box = document.getElementById('options-box'); box.innerHTML = "";
+    q.opts.forEach((o, i) => {
+      const b = document.createElement('button');
+      b.className = `opt-btn${uAns[active][currIdx] === i ? ' selected' : ''}`;
+      if (isReview) {
+        if (i === q.ans) b.style.borderColor = "var(--correct)";
+        else if (uAns[active][currIdx] === i) b.style.borderColor = "var(--wrong)";
+        b.disabled = true;
+      }
+      b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
+      b.onclick = () => { if (!isReview) { uAns[active][currIdx] = i; loadQ(); renderNav(); } };
+      box.appendChild(b);
+    });
+    renderNav();
+  }
+
+  /* ── Question number grid ── */
+  function renderNav() {
+    const grid = document.getElementById('q-nav-grid'); grid.innerHTML = "";
+    eData[active].forEach((q, i) => {
+      const n = document.createElement('div');
+      n.className = `q-num${i === currIdx ? ' current' : ''}`;
+      if (isReview) {
+        if (uAns[active][i] === undefined) n.style.opacity = ".3";
+        else if (Number(uAns[active][i]) === Number(q.ans)) n.classList.add('rev-correct');
+        else n.classList.add('rev-wrong');
+      } else if (uAns[active][i] !== undefined) n.classList.add('answered');
+      n.innerText = i + 1;
+      n.onclick = () => { currIdx = i; loadQ(); };
+      grid.appendChild(n);
+    });
+  }
+
+  function nextQ() { if (currIdx < eData[active].length - 1) { currIdx++; loadQ(); } }
+  function prevQ() { if (currIdx > 0) { currIdx--; loadQ(); } }
+
+  /* ── Timer ── */
+  function startTimer() {
+    let t = 120 * 60;
+    mainTimer = setInterval(() => {
+      const m = Math.floor(t / 60), s = t % 60;
+      document.getElementById('exam-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+      if (t <= 0) { clearInterval(mainTimer); submitCBT(); }
+      t--;
+    }, 1000);
+  }
+
+  /* ── Submit ── */
+  function submitCBT() {
+    closeModals(); clearInterval(mainTimer);
+    let correctCount = 0;
+    const totalPossible = selected.length * 40;
+    let log = "";
+
+    selected.forEach(s => {
+      let sCorrect = 0;
+      eData[s].forEach((q, i) => {
+        if (uAns[s][i] !== undefined && Number(uAns[s][i]) === Number(q.ans)) { correctCount++; sCorrect++; }
+      });
+      log += `${s}: ${sCorrect}/40\n`;
     });
 
-    async function syncQuestions() {
-        if(!selected.length) return alert("Select subjects!");
-        document.getElementById('setup-screen').classList.add('hidden');
-        document.getElementById('loading-screen').classList.remove('hidden');
-        const bar = document.getElementById('prog-bar');
-        
-        try {
-            let completed = 0;
-            for(let s of selected) {
-                document.getElementById('loader-status').innerText = `Downloading ${s}...`;
-                const res = await fetch(`https://questions.aloc.com.ng/api/v2/q/40?subject=${s.toLowerCase()}`, { headers: { 'AccessToken': KEY } });
-                const json = await res.json();
-                eData[s] = (json.data || []).slice(0, 40).map(q => ({
-                    q: q.question.replace(/&nbsp;/g, ' ').replace(/[^\x00-\x7F]/g, ""),
-                    opts: [q.option.a, q.option.b, q.option.c, q.option.d],
-                    ans: ["a","b","c","d"].indexOf((q.answer || "").toLowerCase().trim())
-                }));
-                uAns[s] = {};
-                completed++;
-                let pct = Math.round((completed / selected.length) * 100);
-                bar.style.width = pct + "%"; bar.innerText = pct + "%";
-            }
-            document.getElementById('loader-status').innerText = "Almost Ready...";
-            let t = 3; const timer = setInterval(() => {
-                document.getElementById('countdown-sync').innerText = t; t--;
-                if(t < 0) { clearInterval(timer); active = selected[0]; document.getElementById('loading-screen').classList.add('hidden'); document.getElementById('exam-screen').classList.remove('hidden'); renderTabs(); loadQ(); startTimer(); }
-            }, 1000);
-        } catch { alert("Network Trip. Check internet."); location.reload(); }
+    const aggregate = Math.round((correctCount / totalPossible) * 400);
+    db.sessions++;
+    if (aggregate > db.best) db.best = aggregate;
+    db.history.push({ date: new Date().toLocaleDateString(), score: aggregate, detail: log, subjectTags: selected.map(s => s.substring(0,3)).join(', ') });
+    refresh();
+
+    document.getElementById('exam-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    document.getElementById('final-percent').innerText = `${aggregate} / 400`;
+    document.getElementById('breakdown-list').innerText = log;
+  }
+
+  /* ── Review ── */
+  function startReview() {
+    isReview = true;
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('exam-screen').classList.remove('hidden');
+    document.getElementById('final-submit-trigger').classList.add('hidden');
+    document.getElementById('exit-review-btn').classList.remove('hidden');
+    document.getElementById('exam-timer').innerText = "REVIEW MODE";
+    currIdx = 0;
+    loadQ();
+  }
+
+  /* ── Feedback ── */
+  function fillIdea(t) { document.getElementById('idea-msg').value = t; }
+  function sendIdea()  { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
+
+  /* ── Calculator ── */
+  let calcVal = "0", calcPrev = "", calcOp = "", calcFresh = false;
+  function cClr() { calcVal = "0"; calcPrev = ""; calcOp = ""; calcFresh = false; document.getElementById('calc-display').value = "0"; }
+  function cPress(v) {
+    if ("+-*/".includes(v)) {
+      calcPrev = calcVal; calcOp = v; calcFresh = true;
+    } else {
+      calcVal = (calcFresh || calcVal === "0") ? v : calcVal + v;
+      calcFresh = false;
     }
-
-    function renderTabs() {
-        const c = document.getElementById('sub-tabs-bar'); c.innerHTML = "";
-        selected.forEach(s => {
-            const b = document.createElement('button');
-            b.innerText = s; b.style.cssText = `width:auto; padding:8px 18px; font-size:11px; border:none; border-radius:12px; background:${s===active?"#007bff":"#555"}; color:white; cursor:pointer;`;
-            b.onclick = () => { active = s; currIdx = 0; renderTabs(); loadQ(); };
-            c.appendChild(b);
-        });
-    }
-
-    function loadQ() {
-        const list = eData[active];
-        const q = list[currIdx];
-        document.getElementById('q-sub-title').innerText = active;
-        document.getElementById('q-progress-text').innerText = `${Object.keys(uAns[active]).length} / 40 Answered`;
-        document.getElementById('question-box').innerHTML = q.q;
-        const box = document.getElementById('options-box'); box.innerHTML = "";
-        q.opts.forEach((o, i) => {
-            const b = document.createElement('button');
-            b.className = `opt-btn ${uAns[active][currIdx] === i ? 'selected' : ''}`;
-            if(isReview) {
-                if(i === q.ans) b.style.borderColor = "var(--correct)";
-                else if(uAns[active][currIdx] === i) b.style.borderColor = "var(--wrong)";
-                b.disabled = true;
-            }
-            b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
-            b.onclick = () => { if(!isReview) { uAns[active][currIdx] = i; loadQ(); renderNav(); } };
-            box.appendChild(b);
-        });
-        renderNav();
-    }
-
-    function renderNav() {
-        const grid = document.getElementById('q-nav-grid'); grid.innerHTML = "";
-        eData[active].forEach((q, i) => {
-            const n = document.createElement('div');
-            n.className = `q-num ${i === currIdx ? 'current' : ''}`;
-            if(isReview) {
-                if(uAns[active][i] === undefined) n.style.opacity = "0.3";
-                else if(Number(uAns[active][i]) === Number(q.ans)) n.classList.add('rev-correct');
-                else n.classList.add('rev-wrong');
-            } else if(uAns[active][i] !== undefined) n.classList.add('answered');
-            n.innerText = i + 1;
-            n.onclick = () => { currIdx = i; loadQ(); };
-            grid.appendChild(n);
-        });
-    }
-
-    function nextQ() { if(currIdx < eData[active].length-1) { currIdx++; loadQ(); } }
-    function prevQ() { if(currIdx > 0) { currIdx--; loadQ(); } }
-
-    function startTimer() {
-        let t = 120 * 60;
-        mainTimer = setInterval(() => {
-            let m = Math.floor(t/60), s = t%60;
-            document.getElementById('exam-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if(t <= 0) { clearInterval(mainTimer); submitCBT(); }
-            t--;
-        }, 1000);
-    }
-
-    function submitCBT() {
-        closeModals(); clearInterval(mainTimer);
-        let correctCount = 0;
-        let totalPossible = selected.length * 40;
-        let log = "";
-        
-        selected.forEach(s => {
-            let sCorrect = 0;
-            eData[s].forEach((q, i) => {
-                if(uAns[s][i] !== undefined && Number(uAns[s][i]) === Number(q.ans)) {
-                    correctCount++;
-                    sCorrect++;
-                }
-            });
-            log += `${s}: ${sCorrect}/40\n`;
-        });
-        
-        const aggregate = Math.round((correctCount / totalPossible) * 400);
-        db.sessions++; if(aggregate > db.best) db.best = aggregate;
-        db.history.push({ date: new Date().toLocaleDateString(), score: aggregate, detail: log, subjectTags: selected.map(s => s.substring(0,3)).join(', ') });
-        refresh();
-        document.getElementById('exam-screen').classList.add('hidden');
-        document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('final-percent').innerText = `${aggregate} / 400`;
-        document.getElementById('breakdown-list').innerHTML = `<pre style="font-family:inherit; background:rgba(0,0,0,0.05); padding:15px; border-radius:15px;">${log}</pre>`;
-    }
-
-    function startReview() { isReview = true; document.getElementById('result-screen').classList.add('hidden'); document.getElementById('exam-screen').classList.remove('hidden'); document.getElementById('final-submit-trigger').classList.add('hidden'); document.getElementById('exit-review-btn').classList.remove('hidden'); document.getElementById('exam-timer').innerText = "REVIEW MODE"; currIdx = 0; loadQ(); }
-    function fillIdea(t) { document.getElementById('idea-msg').value = t; }
-    function sendIdea() { window.open(`https://wa.me/2349042427548?text=${encodeURIComponent(document.getElementById('idea-msg').value)}`); }
+    document.getElementById('calc-display').value = calcVal;
+  }
+  function cSolve() {
+    if (!calcOp || !calcPrev) return;
+    const a = parseFloat(calcPrev), b = parseFloat(calcVal);
+    const res = calcOp === '+' ? a+b : calcOp === '-' ? a-b : calcOp === '*' ? a*b : calcOp === '/' ? (b ? a/b : "Err") : b;
+    calcVal = String(parseFloat(res.toFixed(10))); calcOp = ""; calcPrev = "";
+    document.getElementById('calc-display').value = calcVal;
+  }
 </script>
 </body>
 </html>
